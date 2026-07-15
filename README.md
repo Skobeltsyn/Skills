@@ -9,6 +9,9 @@ Each skill is a folder with a `SKILL.md` (YAML frontmatter + instructions) plus 
 - [`lethal-trifecta-audit`](skills/lethal-trifecta-audit/) — audit a Claude Code agent for the
   lethal trifecta (private data + untrusted content + external communication), then confirm
   which exfiltration paths are live with localhost canary probes.
+- [`sdlc-scaffold`](skills/sdlc-scaffold/) — scaffold the numbered agentic SDLC pipeline
+  (`0-vibes` → … → `10-observation`) into a repo: stage folders, per-stage README charters,
+  and per-stage `CLAUDE.md` convention files. Idempotent; safe to re-run to backfill stages.
 
 ## Layout
 
