@@ -1,0 +1,13 @@
+{
+  "name": "skills",
+  "description": "Open, reusable skills for AI agents — currently lethal-trifecta-audit.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Skobeltsyn",
+    "email": "konstantin@skobeltsyn.com"
+  },
+  "homepage": "https://github.com/Skobeltsyn/Skills",
+  "repository": "https://github.com/Skobeltsyn/Skills",
+  "license": "MIT",
+  "keywords": ["skills", "security", "agent"]
+}

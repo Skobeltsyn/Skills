@@ -1,0 +1,16 @@
+{
+  "name": "skobeltsyn-skills",
+  "description": "Open, reusable skills for AI agents.",
+  "owner": {
+    "name": "Skobeltsyn",
+    "email": "konstantin@skobeltsyn.com"
+  },
+  "plugins": [
+    {
+      "name": "skills",
+      "source": "./",
+      "description": "Bundle of all skills in this repo (currently: lethal-trifecta-audit).",
+      "version": "0.1.0"
+    }
+  ]
+}
