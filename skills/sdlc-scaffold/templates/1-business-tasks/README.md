@@ -4,7 +4,7 @@ Origin of all work. Capture raw business needs, observations, research, and
 high-level plans here — the **why** behind everything downstream.
 
 An item leaves this stage when it is understood well enough to be specified in
-`../3-specs/`.
+`../2-specs/`.
 
 ## Structure
 - `observation/` — signals gathered from the running system, users, and ops,

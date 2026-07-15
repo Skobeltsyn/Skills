@@ -10,4 +10,4 @@ users, and operations that feed planning. Observations are triaged by severity.
 
 Observations feed `../planning/`, which shapes them into plans and priorities.
 
-Naming conventions in [`CLAUDE.md`](CLAUDE.md).
+Naming conventions in [`AGENTS.md`](AGENTS.md).

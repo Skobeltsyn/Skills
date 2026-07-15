@@ -1,6 +1,6 @@
 ---
 name: sdlc-scaffold
-description: Scaffold the numbered agentic SDLC pipeline (0-vibes → 1-business-tasks → 3-specs → 4-design → 5-tasks → 6-results → 7-eval → 8-security-check → 9-deploy → 10-observation) into a repo — stage folders, per-stage README charters, and per-stage CLAUDE.md convention files. Use when starting a new project on this workflow, backfilling missing stages in an existing one, or when asked to "set up the pipeline / the stage folders / an SDLC scaffold".
+description: Scaffold the numbered agentic SDLC pipeline (0-vibes → 1-business-tasks → 2-specs → 3-design → 4-tasks → 5-results → 6-eval → 7-security-check → 8-deploy → 9-observation) into a repo — stage folders, per-stage README charters, and per-stage AGENTS.md convention files (each with a CLAUDE.md stub that imports it). Use when starting a new project on this workflow, backfilling missing stages in an existing one, or when asked to "set up the pipeline / the stage folders / an SDLC scaffold".
 ---
 
 # SDLC pipeline scaffold
@@ -8,7 +8,16 @@ description: Scaffold the numbered agentic SDLC pipeline (0-vibes → 1-business
 Builds the numbered stage skeleton that this workflow runs on. The scaffold is
 **structure and conventions only** — no domain content. Domain artifacts (PRDs,
 specs, components) are authored later, in-stage, by following each stage's
-`CLAUDE.md`.
+`AGENTS.md`. Each folder has to contain also `CLAUDE.md` with import of `AGENTS.md`.
+
+**The structure is meant to transfer; the defaults are not.** The stage sequence
+and the README/AGENTS/CLAUDE pattern are the transferable part — they hold for
+any project on this workflow. Everything concrete the scaffold ships is an
+opinionated seed from the origin project: the Roboto / min-14px design
+constraints, the `xs md lg xl xxl` size set, the framework folders, the ID
+schemes. They exist so a new pipeline starts from something real rather than
+blank, and the adaptation pass is where they get overwritten. Never mistake a
+default for a law.
 
 ## Run it
 
@@ -22,11 +31,16 @@ or is vendored into a project's `.claude/skills/`. Do not rewrite it as a
 literal path.
 
 - Idempotent: existing files are **skipped**, never clobbered. Safe to re-run to
-  backfill stages added later. Pass `--force` to overwrite.
-- `--project` fills `{{PROJECT_NAME}}` in the root `CLAUDE.md`.
-- `--dry-run` lists what would be written.
+  backfill stages added later.
 - Run `--dry-run` first when the target already has content, so the skip list is
   visible before anything lands.
+- `--force` overwrites — and **always copies the existing folder first**, to
+  `<target>.bak-<n>`, before the first file is overwritten. Stage rules get
+  hand-adapted after scaffolding and that work is unrecoverable, so a clobber
+  must always be undoable. The copy is lazy: a `--force` run that overwrites
+  nothing leaves no backup behind, and an existing `.bak-1` is never reused.
+- `--project` fills `{{PROJECT_NAME}}` in the root `AGENTS.md`.
+- `--dry-run` lists what would be written, including the backup it would take.
 
 Then do the **adaptation pass** below — an unadapted scaffold is a template, not
 a pipeline.
@@ -36,37 +50,96 @@ a pipeline.
 ### 1. Number encodes flow direction
 
 ```
-0-vibes/ → 1-business-tasks/ → 3-specs/ → 4-design/ → 5-tasks/
+0-vibes/ → 1-business-tasks/ → 2-specs/ → 3-design/ → 4-tasks/
                                                           │
    ┌──────────────────────────────────────────────────────┘
    ▼
-6-results/ → 7-eval/ → 8-security-check/ → 9-deploy/ → 10-observation/
+5-results/ → 6-eval/ → 7-security-check/ → 8-deploy/ → 9-observation/
                                                             │
                         └─ loops back to 1-business-tasks/observation/
 ```
 
-It is a **loop**, not a line. Stage 10 feeds stage 1. Stages are never skipped:
+It is a **loop**, not a line. Stage 9 feeds stage 1. Stages are never skipped:
 a spec references a task, a design references a spec.
 
-**On the gap at 2:** the origin repo has a `2-tasks/` backlog stage that went
-unused — its `CLAUDE.md` is empty and specs traced straight from
-`1-business-tasks/planning/` (PT-*) to `3-specs/`. The scaffold omits it and
-keeps the gap, because stage numbers are load-bearing identifiers baked into
-cross-links (`../3-specs/…`) across every stage. If a project wants a distinct
-backlog stage between "why" and "how it should work", add `2-tasks/` back rather
-than renumbering.
+Numbers are contiguous, 0–9. They are load-bearing identifiers — baked into
+cross-links (`../2-specs/…`), README index tables, and every artifact's upstream
+trace — so a stage added or removed means rewriting all of them in lockstep, and
+a broken link anywhere is a severed audit trail.
 
 ### 2. Two files govern every stage — this is the core rule
 
 | File | Audience | Contains |
 |------|----------|----------|
 | `README.md` | humans | The stage charter: what it's for, its structure, what goes here, and the **exit criterion** — one line in the form *"An item leaves this stage when …"* |
-| `CLAUDE.md` | agents | The hard rules: ID naming schemes, required variant/size sets, generation instructions. Terse and imperative. |
+| `AGENTS.md` | agents | The hard rules: ID naming schemes, required variant/size sets, generation instructions. Terse and imperative. |
 
 Keep them separate. A `README.md` that explains a naming scheme gets ignored by
-agents; a `CLAUDE.md` that waxes about purpose wastes context. Only stages that
-actually **generate ID'd artifacts** need a `CLAUDE.md` — stages 5–10 ship with
-`README.md` alone, and that's deliberate.
+agents; an `AGENTS.md` that waxes about purpose wastes context.
+
+**Every folder has both — all 28, no exceptions to remember.** A folder with no
+naming scheme still has rules worth stating: `5-results/` owes a link back to the
+task that produced it, `8-deploy/` owes a rollback plan, `9-observation/errors/`
+owes its severity on the far side of the loop. But never write a hollow
+`AGENTS.md` to satisfy the pattern — if a folder truly has nothing to say, that's
+evidence the folder shouldn't exist, not that it needs a placeholder.
+
+Agent rules go in `AGENTS.md`, not `CLAUDE.md`. `AGENTS.md` is the tool-neutral
+convention: any coding agent that reads it gets the stage's rules, not just
+Claude Code. A pipeline whose rules only one vendor's agent can find is a
+pipeline with a single point of failure.
+
+### 2a. Every folder carries a `CLAUDE.md` — a one-line import, never a second copy
+
+Claude Code does not read `AGENTS.md` by default, so **every folder** ships a
+`CLAUDE.md` that imports the `AGENTS.md` governing it and holds nothing else:
+
+```markdown
+<!-- Conventions live in AGENTS.md (tool-neutral). Edit them there, not here. -->
+
+@AGENTS.md
+```
+
+Every folder, without exception. An agent that opens
+`2-specs/actors/ACTOR-1-FARMER.md` lands in `2-specs/actors/` — with no
+`CLAUDE.md` there, the naming scheme never enters context and the file gets
+written against a guessed convention. A stub in every folder is what makes the
+rules unmissable regardless of where work starts.
+
+**A nested folder imports its own rules *and* inherits its ancestors'**, each
+from that rule's one home:
+
+```markdown
+@AGENTS.md
+@../AGENTS.md
+```
+
+| Folder | Imports | Gets |
+|--------|---------|------|
+| `2-specs/` | `@AGENTS.md` | the cross-cutting spec rules |
+| `2-specs/actors/` | `@AGENTS.md` + `@../AGENTS.md` | the `ACTOR-{n}` scheme **and** the spec rules |
+| `1-business-tasks/observation/errors/` | `@AGENTS.md` + `@../AGENTS.md` + `@../../AGENTS.md` | `TYPE is ERROR`, the `OT-{n}-{TYPE}` scheme, the origination rules |
+
+The chain stops **below the repo root**: the root `CLAUDE.md` already loads the
+charter for every session, so importing it again would duplicate it in context.
+
+This is what lets each rule live in exactly one file. The `ACTOR-{n}-NAME` scheme
+is stated only in `2-specs/actors/AGENTS.md`; `2-specs/AGENTS.md` holds only what
+spans all five subfolders. Neither restates the other, and an agent in `actors/`
+still sees both. **Never solve inheritance by copying a parent's rule into a
+child** — that's two homes for one rule, and they will drift.
+
+The `../` depth is load-bearing: move a folder and its chain must be recomputed.
+The invariant to hold is that every `@` path resolves to a file that exists — an
+import of a deleted `AGENTS.md` is a broken import, not a no-op.
+
+**One rule, one home.** The moment a rule is written into a `CLAUDE.md`, the two
+files drift and agents start disagreeing about the naming scheme. If you catch
+yourself editing a `CLAUDE.md`, you are editing the wrong file. The stub is
+append-only in one direction: content moves *out* to `AGENTS.md`, never in.
+
+Same rule at the repo root: the pipeline charter is the root `AGENTS.md`; the
+root `CLAUDE.md` is the same stub, importing `@AGENTS.md` and nothing else.
 
 ### 3. Every artifact type gets an ID scheme
 
@@ -76,11 +149,11 @@ Scaffolded schemes, verbatim from the origin pipeline:
 |-------|----------|--------|
 | `1-business-tasks/observation/` | observation task | `OT-{n}-{TYPE}.md` |
 | `1-business-tasks/planning/` | planning task | `PT-{n}.md` |
-| `3-specs/actors/` | actor | `ACTOR-{n}-NAME-IN-MODULE` |
-| `3-specs/entities/` | entity | `ENT-{n}-NAME-IN-MODULE` |
-| `3-specs/events/` | event | `EVT-{n}-NAME-IN-MODULE` |
-| `3-specs/use-cases/` | use-case | `UC-{n}-ACTOR-{n}-EVT-{n}-ENT-{n}-RESULT-IN-MODULE` |
-| `4-design/` | component | `FIG-{n}-{TYPE}-{VARIANT1-name}-{value}-…` |
+| `2-specs/actors/` | actor | `ACTOR-{n}-NAME-IN-MODULE` |
+| `2-specs/entities/` | entity | `ENT-{n}-NAME-IN-MODULE` |
+| `2-specs/events/` | event | `EVT-{n}-NAME-IN-MODULE` |
+| `2-specs/use-cases/` | use-case | `UC-{n}-ACTOR-{n}-EVT-{n}-ENT-{n}-RESULT-IN-MODULE` |
+| `3-design/` | component | `FIG-{n}-{TYPE}-{VARIANT1-name}-{value}-…` |
 
 Two properties worth preserving when inventing new schemes:
 
@@ -88,7 +161,7 @@ Two properties worth preserving when inventing new schemes:
   states its actor, trigger, entity, and outcome before the file is opened —
   the directory listing *is* the traceability matrix.
 - **One artifact per file.** Not one file listing many events. This is why
-  `3-specs/events/` holds 26 separate `EVT-*.md` files.
+  `2-specs/events/` holds 26 separate `EVT-*.md` files.
 
 ### 4. Traceability runs upstream, always
 
@@ -100,23 +173,29 @@ from a PRD requirement to a module.
 
 ### 5. Severity triage appears at both ends of the loop
 
-`1-business-tasks/observation/` and `10-observation/` both split into
+`1-business-tasks/observation/` and `9-observation/` both split into
 `errors/` · `warnings/` · `infos/`. Same three folders, same meaning, because
-stage 10's output becomes stage 1's input — a signal keeps its severity as it
+stage 9's output becomes stage 1's input — a signal keeps its severity as it
 crosses the loop boundary.
 
 ## Adaptation pass (do this after running the script)
 
-1. **Root `CLAUDE.md`** — confirm the project name and that the stage list
+Every edit below lands in an `AGENTS.md`. The `CLAUDE.md` stubs are finished the
+moment they're written — if one shows up in your diff, you edited the wrong file.
+
+1. **Root `AGENTS.md`** — confirm the project name and that the stage list
    matches what you actually scaffolded.
-2. **Prune what doesn't apply.** No design surface? Drop `4-design/` and say so
-   in the root `CLAUDE.md`. Better to remove a stage than leave it hollow.
+2. **Prune what doesn't apply.** No design surface? Drop `3-design/` and say so
+   in the root `AGENTS.md`. Better to remove a stage than leave it hollow. Delete
+   a stage **whole** — folder and all — never just its `AGENTS.md`: the stubs
+   below it import upward, so removing `3-design/AGENTS.md` while keeping
+   `3-design/react/` leaves that folder importing a file that no longer exists.
 3. **Pick the design targets.** The scaffold ships `figma/`, `react/`, and
    `vue/`. Delete the frameworks the project won't use — each carries a "every
    component ships a Storybook story" rule that must stay true.
-4. **Paste the Figma file URL** into `4-design/figma/CLAUDE.md` (it scaffolds as
+4. **Paste the Figma file URL** into `3-design/figma/AGENTS.md` (it scaffolds as
    a `TODO`).
-5. **Set the design constraints** in `4-design/CLAUDE.md` — it scaffolds with
+5. **Set the design constraints** in `3-design/AGENTS.md` — it scaffolds with
    the origin's Roboto / min-14px / `xs md lg xl xxl` size set. These are that
    project's choices, not laws.
 6. **Leave index tables empty until artifacts exist.** An index promising specs
@@ -126,17 +205,16 @@ crosses the loop boundary.
 
 Project-specific machinery, not pipeline structure:
 
-- `4-design/ground_truth/` — one project's design system (color tokens, core
+- `3-design/ground_truth/` — one project's design system (color tokens, core
   principles, per-component and per-page ground truth). Its `pages/CLAUDE.md`
   rule ("folders reflect URLs, generated from use-cases, one per size") is a
   good pattern to copy **if** the project has a page surface.
-- `7-eval/auto/` — a Playwright Storybook screenshot/error harness wired to one
+- `6-eval/auto/` — a Playwright Storybook screenshot/error harness wired to one
   specific Vue design system. Build the eval harness that fits the actual
   deliverable.
 
-## After scaffolding
+## Related
 
-This skill only *writes* the convention files. Before generating artifacts
-**into** a stage, re-read that stage's `CLAUDE.md` from disk — they are edited
-live once a project is running, so the version scaffolded here is the starting
-point, not the current truth.
+- Load `stage-conventions` before generating artifacts **into** a scaffolded
+  stage. This skill writes the convention files; that one makes sure they get
+  read (they're edited live and go stale fast).

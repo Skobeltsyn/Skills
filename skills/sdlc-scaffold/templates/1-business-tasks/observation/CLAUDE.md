@@ -1,4 +1,5 @@
-Each observation task should have following naming:
-OT-{number}-{TYPE}.md and contain all needed data to accomplish and understand it.
+<!-- Conventions live in AGENTS.md (tool-neutral). Edit them there, not here. -->
+<!-- This folder inherits its ancestors rules; each is imported once, from its one home. -->
 
-During generation please interview creator until you have common understanding.
+@AGENTS.md
+@../AGENTS.md
