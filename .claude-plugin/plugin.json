@@ -1,6 +1,6 @@
 {
   "name": "skills",
-  "description": "Open, reusable skills for AI agents — currently lethal-trifecta-audit.",
+  "description": "Open, reusable skills for AI agents, including a lethal-trifecta audit that finds and probes prompt-injection exfiltration paths in a Claude Code setup.",
   "version": "0.1.0",
   "author": {
     "name": "Skobeltsyn",

@@ -6,8 +6,9 @@ description: Template skill showing the SKILL.md format. Not a real capability â
 
 # Example skill
 
-This is a template. Copy the `example-skill/` folder, rename it, and rewrite
-everything below the frontmatter for your actual task.
+This is a template. Copy this folder into `skills/`, rename it, and rewrite
+everything below the frontmatter for your actual task. It lives outside
+`skills/` on purpose â€” only real skills ship to users.
 
 ## When to use
 

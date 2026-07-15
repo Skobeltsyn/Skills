@@ -4,6 +4,12 @@ Open, reusable **skills for AI agents** — self-contained instruction packs tha
 
 Each skill is a folder with a `SKILL.md` (YAML frontmatter + instructions) plus any supporting files it references. Drop a skill into an agent that supports the [Agent Skills](https://code.claude.com/docs/en/skills) format (Claude Code, the Claude Agent SDK, etc.) and it becomes available on demand.
 
+## Skills
+
+- [`lethal-trifecta-audit`](skills/lethal-trifecta-audit/) — audit a Claude Code agent for the
+  lethal trifecta (private data + untrusted content + external communication), then confirm
+  which exfiltration paths are live with localhost canary probes.
+
 ## Layout
 
 ```
@@ -13,7 +19,12 @@ skills/
     references/       # optional: docs the skill loads as needed
     scripts/          # optional: helper scripts the skill runs
     assets/           # optional: templates, examples, data
+
+templates/
+  example-skill/      # copy this as the starting point for a new skill
 ```
+
+Only `skills/` ships when the repo is installed as a plugin; `templates/` is scaffolding for authors.
 
 ## Anatomy of a skill
 
@@ -34,11 +45,22 @@ The `description` is the most important line — it's all the agent sees when de
 
 ## Using these skills
 
-**Claude Code** — copy a skill folder into `~/.claude/skills/` (personal) or `.claude/skills/` (project), or point at this repo as a plugin.
+**Claude Code, as a plugin** (recommended — you get updates with `/plugin`):
+
+```
+/plugin marketplace add Skobeltsyn/Skills
+/plugin install skills@skobeltsyn-skills
+```
+
+Installed skills are namespaced by the plugin, so `lethal-trifecta-audit` is invoked as
+`/skills:lethal-trifecta-audit` (or Claude loads it on its own when a task matches).
+
+**Claude Code, by hand** — copy a skill folder into `~/.claude/skills/` (personal) or
+`.claude/skills/` (project).
 
 **Claude Agent SDK** — load the skill directory when configuring your agent.
 
-See [`skills/example-skill/`](skills/example-skill/) for a working template to copy.
+See [`templates/example-skill/`](templates/example-skill/) for a working template to copy.
 
 ## Contributing
 

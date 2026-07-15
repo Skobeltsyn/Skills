@@ -4,8 +4,9 @@ Thanks for wanting to add a skill! The bar is simple: **one skill, one job, done
 
 ## Adding a skill
 
-1. Create a folder under `skills/` named in `kebab-case` (e.g. `pdf-fill`, `git-triage`).
-2. Add a `SKILL.md` with frontmatter:
+1. Copy [`templates/example-skill/`](templates/example-skill/) to a folder under `skills/`
+   named in `kebab-case` (e.g. `pdf-fill`, `git-triage`).
+2. Rewrite `SKILL.md`, starting with the frontmatter:
    ```markdown
    ---
    name: pdf-fill
@@ -16,6 +17,10 @@ Thanks for wanting to add a skill! The bar is simple: **one skill, one job, done
 3. Write focused instructions below the frontmatter. Put anything long or
    optional (reference docs, examples, scripts) in subfolders and link to them
    so the agent loads them only when needed.
+4. Add a one-line entry to the skill list in [README.md](README.md).
+
+Everything under `skills/` ships to users when the repo is installed as a plugin, so put
+scaffolding and examples in `templates/`, never in `skills/`.
 
 ## Guidelines
 
@@ -26,7 +31,9 @@ Thanks for wanting to add a skill! The bar is simple: **one skill, one job, done
 - **Make it self-contained.** A skill should not assume files outside its folder.
 - **Prefer scripts for determinism.** If a step is mechanical, ship a script in
   `scripts/` rather than describing it in prose.
-- **Test it.** Run the skill end-to-end in an agent before opening a PR.
+- **Test it.** Run the skill end-to-end in an agent before opening a PR, and run
+  `claude plugin validate .` from the repo root — it checks the marketplace manifest and
+  every skill's frontmatter.
 
 ## Naming
 

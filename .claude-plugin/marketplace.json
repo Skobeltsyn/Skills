@@ -9,8 +9,11 @@
     {
       "name": "skills",
       "source": "./",
-      "description": "Bundle of all skills in this repo (currently: lethal-trifecta-audit).",
-      "version": "0.1.0"
+      "description": "Every skill in this repo, bundled as one plugin.",
+      "version": "0.1.0",
+      "license": "MIT",
+      "homepage": "https://github.com/Skobeltsyn/Skills",
+      "keywords": ["skills", "security", "agent"]
     }
   ]
 }
