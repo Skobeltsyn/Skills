@@ -1,6 +1,5 @@
-ENTITIES naming: ENT-{number}-NAME-IN-MODULE
+ENTITIES naming: `ENT-{number}-{NAME}-IN-{MODULE}`
 
 Specify fields, types, relationships, and invariants.
 
-List the entity's Connections to other entities in full, and name the module
-that owns it.
+Cite in full the ids of other entities this one connects to.

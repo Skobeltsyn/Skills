@@ -1,8 +1,10 @@
-ACTORS naming: ACTOR-{number}-NAME-IN-MODULE
-
-An actor's file should contain all its connections (via Entities), all its
-Events, and all its use-cases, as links or references.
+ACTORS naming: `ACTOR-{number}-{NAME}-IN-{MODULE}`
 
 Define each actor's identity, goals, and permissions.
 
-link all connected entities and events and use cases and link em
+Cite the entities and events this actor interacts with, by id.
+
+Do not list the actor's use-cases. Use-cases are derived after actors, and each
+names its actor in its own filename — `../use-cases/` already answers "which
+use-cases involve `ACTOR-1`". Recording it here would mean editing a frozen file
+every time a new use-case appeared.

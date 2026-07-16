@@ -77,7 +77,17 @@ a broken link anywhere is a severed audit trail.
 Keep them separate. A `README.md` that explains a naming scheme gets ignored by
 agents; an `AGENTS.md` that waxes about purpose wastes context.
 
-**Every folder has both — all 28, no exceptions to remember.** A folder with no
+**Every *structure* folder has both — all 30, no exceptions to remember.** The
+tree holds two kinds of folder and only one carries convention files:
+
+- **structure folders** — the numbered stages and their subfolders. `README.md`,
+  `AGENTS.md`, and a `CLAUDE.md` stub, every one.
+- **content folders** — `obsolete/`, `raw/<date>/`, and the folder an oversized
+  file splits into. They hold data, not rules, and carry nothing. A new dated
+  raw folder appears every time someone drops data; demanding three convention
+  files in each is a rule nobody would follow past week two.
+
+A folder with no
 naming scheme still has rules worth stating: `5-results/` owes a link back to the
 task that produced it, `8-deploy/` owes a rollback plan, `9-observation/errors/`
 owes its severity on the far side of the loop. But never write a hollow
@@ -120,8 +130,27 @@ from that rule's one home:
 | `2-specs/actors/` | `@AGENTS.md` + `@../AGENTS.md` | the `ACTOR-{n}` scheme **and** the spec rules |
 | `1-business-tasks/observation/errors/` | `@AGENTS.md` + `@../AGENTS.md` + `@../../AGENTS.md` | `TYPE is ERROR`, the `OT-{n}-{TYPE}` scheme, the origination rules |
 
-The chain stops **below the repo root**: the root `CLAUDE.md` already loads the
-charter for every session, so importing it again would duplicate it in context.
+**The chain runs all the way to the root**, which is where the pipeline law
+lives — the cross-cutting rules no single stage can enforce: artifacts are
+frozen, ids are permanent, citations are by id, obsolescence is a move to
+`obsolete/` plus a tombstone.
+
+An earlier version of this scaffold stopped the chain one level below the root,
+reasoning that the root `CLAUDE.md` already loads for every session so importing
+it again would duplicate it in context. That was wrong twice over. It made the
+law reachable only through a **Claude-Code-specific** session-loading behaviour —
+in a scaffold whose entire reason for using `AGENTS.md` is that rules only one
+vendor's agent can find are a single point of failure. And it left the law
+unreachable for a spawned agent that never loads the root at all.
+
+The tell was already on disk: the traceability rule had been restated in four
+stage files, and the Storybook rule in eight. Nobody chose that redundancy —
+each author sensed the agent wouldn't see the root and restated the rule
+defensively. **Duplication is what a missing import looks like from the inside.**
+Both collapsed back to one home the moment the chain reached the root.
+
+Keep the root law short — it lands in every folder's context. Its charter and
+stage descriptions belong in the root `README.md`, not here.
 
 This is what lets each rule live in exactly one file. The `ACTOR-{n}-NAME` scheme
 is stated only in `2-specs/actors/AGENTS.md`; `2-specs/AGENTS.md` holds only what
@@ -178,7 +207,11 @@ Two properties worth preserving when inventing new schemes:
 
 ### 4. Traceability runs upstream, always
 
-Every artifact links back to what produced it, by relative link. Every subfolder
+Every artifact cites the id(s) it was derived from — **by id, never by path**. A
+path is a location and locations change; an id is the artifact itself. That is
+what lets an artifact be entombed in `obsolete/` without breaking a single
+citation pointing at it, and filenames start with their id so any id resolves by
+glob (`**/ACTOR-1-*.md`). Every subfolder
 `README.md` carries an **index table** of its artifacts with those links — see
 the `Source` / `PT` columns in the scaffolded spec READMEs. When the origin repo
 lists `| PT-1 | Authentication | R1, R13, R16 |`, that row is the audit trail

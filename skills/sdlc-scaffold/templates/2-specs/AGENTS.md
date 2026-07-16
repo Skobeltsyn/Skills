@@ -1,14 +1,13 @@
-Specs are generated this way
+Specs expand planning tasks into actors, entities, events, and use-cases.
 
-Read business tasks and restore from them ACTORS, EVENTS, ENTITIES, USE-CASES
-and store em in according folders
+Generate in this order — each step depends on the one before it:
 
-For each spec should be separate file with deep description — never one file
-listing many
+1. Read the planning tasks (`PT-{n}`) this spec set derives from.
+2. Define the modules in `modules/`. Every other spec id names its module, so a
+   module invented later leaves those ids pointing at nothing.
+3. Derive actors, entities, and events into their folders.
+4. Derive use-cases last — a use-case cites ids that must already exist.
 
-Every id carries the module it belongs to as the -IN-MODULE suffix. Modules are
-specified in modules/ — define the module before generating specs that cite it
-
-Also add links to all source tasks
+Every id carries its module as the `-IN-{MODULE}` suffix.
 
 Each subfolder states its own naming scheme. Read it before generating into it.

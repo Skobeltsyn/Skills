@@ -1,4 +1,5 @@
 <!-- Conventions live in AGENTS.md (tool-neutral). Edit them there, not here. -->
-<!-- This folder inherits its ancestors rules; each is imported once, from its one home. -->
+<!-- Each ancestor is imported once, from its one home, up to the pipeline law at the root. -->
 
 @AGENTS.md
+@../AGENTS.md

@@ -1,114 +1,145 @@
-# {{PROJECT_NAME}} — Agentic Development Workflow
+# {{PROJECT_NAME}} — pipeline law
 
-Work flows through numbered stages, each living in its own folder. An artifact
-only advances to the next stage once the previous one is complete.
+What holds across every stage. Each stage's own `AGENTS.md` adds its naming and
+generation rules on top and never restates what is here.
 
-## Workflow stages
+What each stage is *for* is in [`README.md`](README.md). This file is only what
+an agent must obey.
 
-```
-0-vibes/ → 1-business-tasks/ → 2-specs/ → 3-design/ → 4-tasks/
- idea/prd    observe & plan      specs      design    implementation
-                                                           │
-   ┌───────────────────────────────────────────────────────┘
-   ▼
-5-results/ → 6-eval/ → 7-security-check/ → 8-deploy/ → 9-observation/
-  built       quality      security         release      watch → (loops back to 1)
-```
+## Artifacts are closed for modification, open for extension
 
-The pipeline is a **loop**: `9-observation/` feeds signals back into
-`1-business-tasks/observation/` to start the next cycle.
+A generated artifact is **frozen** the instant it is written. Its content, its
+id, and its citations never change. Work that would edit an artifact issues a
+new one instead.
 
-### 0. Vibes — `0-vibes/`
-The earliest, pre-planning stage: raw ideas, inspiration, and loose direction —
-the **vibe**, before anything is structured. Contains:
+The only permitted changes to a frozen file are its **obsolescence header** and
+its **location**. Nothing else, ever.
 
-- `0-vibes/prd/` — Product Requirements Documents: the first structured
-  artifact that turns a vibe into stated product intent, ready to hand off to
-  business tasks.
+This is what makes the pipeline safe to re-run: apply the law to an unchanged
+tree and nothing moves, because nothing is permitted to.
 
-### 1. Business tasks source — `1-business-tasks/`
-Where work originates: **observation and planning**. Raw business needs,
-research notes, stakeholder input, opportunities, and high-level plans. This is
-the "why" — problems worth solving, before they are broken down into concrete
-work. Split into two halves:
+## Ids are permanent
 
-- `1-business-tasks/observation/` — signals from the running system, users, and
-  ops, triaged by severity: `errors/`, `warnings/`, `infos/`.
-- `1-business-tasks/planning/` — high-level plans, roadmaps, and priorities
-  shaped from what observation surfaces.
+Every id — `R{n}`, `OT-{n}`, `PT-{n}`, `ACTOR-{n}`, `ENT-{n}`, `EVT-{n}`,
+`UC-{n}`, `FIG-{n}` — is allocated once. Never reused, never renumbered. The
+next id is one past the highest ever issued, counting obsolete ones.
 
-### 2. Specs — `2-specs/`
-Detailed **specifications** for planning tasks. Each spec expands a task into
-concrete requirements: behavior, data, edge cases, API contracts, and acceptance
-tests. This is the "how it should work" — the source of truth an implementation
-is validated against. Organized by concern:
+Reissuing an id silently repoints every citation in the tree at the wrong
+artifact. Nothing errors. That is why this rule has no exceptions.
 
-- `2-specs/actors/` — who/what interacts with the system (roles, personas,
-  external systems).
-- `2-specs/entities/` — domain objects and their data (fields, relationships,
-  invariants).
-- `2-specs/events/` — things that happen (domain events, triggers, state
-  transitions, side effects).
-- `2-specs/modules/` — functional units that compose actors, entities, and
-  events into behavior.
-- `2-specs/use-cases/` — end-to-end scenarios tying an actor + event + entity
-  to a result.
+## Cite ids, never paths
 
-### 3. Design — `3-design/`
-**Design components** produced from specs. Organized by target:
+Cite `ACTOR-1`. Never `../actors/ACTOR-1-FARMER-IN-AUTH.md`.
 
-- `3-design/figma/` — Figma source of truth. The linked Figma file (see
-  `3-design/figma/AGENTS.md`) is the design origin; components are exported /
-  synced from here.
-- `3-design/react/` — React component implementations.
-- `3-design/vue/` — Vue component implementations.
+Filenames begin with their id, so any id resolves by glob — `**/ACTOR-1-*.md`.
+A path is a location, and locations change. An id is the artifact itself and
+never changes. This is what lets an artifact be entombed without breaking a
+single citation pointing at it.
 
-**Rule: every component must have a Storybook story covering all its internal
-states.** Each component in `react/` and `vue/` ships with its own Storybook
-(`*.stories.*`) so it can be viewed, tested, and reviewed in isolation. A story
-per component is not enough — every internal state the component can be in must
-appear in it, matching the states of the Figma component it mirrors.
+## One artifact per file
 
-This rule is stated in four places on purpose (here, `3-design/README.md`, and
-both framework `AGENTS.md` files) so no agent can miss it. That makes it the one
-deliberate exception to *one rule, one home* — change it in all four or it
-drifts.
+One actor per file. One event per file. One requirement per `R{n}`. Never one
+file listing many — a file holding two artifacts cannot be frozen, cited, or
+entombed independently.
 
-### 4. Tasks — `4-tasks/`
-Concrete **implementation/build tasks** derived from the specs and designs. This
-is where validated design becomes engineering work ready to be built. Each task
-links back to its spec (`2-specs/…`) and/or design (`3-design/…`).
+## Traceability runs upstream
 
-### 5. Results — `5-results/`
-The **output of implementation**: what was actually built. Delivered artifacts,
-code, and outcomes, each traceable back to the task that produced it.
+Every artifact cites the id(s) it was derived from. Upstream only: an artifact
+never lists what was later derived *from* it, because recording that would mean
+editing a frozen file every time a descendant appeared.
 
-### 6. Eval — `6-eval/`
-**Evaluation** of results against the specs — the quality gate. Test results,
-acceptance-criteria checks, and pass/fail verdicts.
+Supersession is the sole exception, and the only link that runs forward.
 
-### 7. Security check — `7-security-check/`
-**Security review** before shipping — the security gate. Vulnerabilities,
-secrets, dependency risks, and access concerns caught here, not in production.
+## Obsolescence
 
-### 8. Deploy — `8-deploy/`
-**Release** of the security-cleared results to their target environment.
-Deployment configs, release notes, rollout/rollback plans.
+An artifact that no longer holds is **entombed** — never deleted, never
+corrected:
 
-### 9. Observation — `9-observation/`
-**Watching the deployed system** in production, triaged by severity (`errors/`,
-`warnings/`, `infos/`). Closes the loop: signals feed back into
-`1-business-tasks/observation/` to start the next cycle.
+1. Move it to `obsolete/` beside its live siblings.
+2. Add a header at the top of the file stating **when**, **why**, and
+   **superseded by** which id — or `none` if the concept is dropped outright.
+3. The artifact replacing it cites `supersedes: <old-id>`.
 
-## Conventions
+Supersession is the only forward link in the pipeline. Without it, the current
+definition of a concept becomes unfindable the moment its id changes.
 
-- Stage folders are numbered to reflect the direction of flow.
-- Do not skip stages — a spec references a task, a design references a spec.
-- Keep each artifact traceable to its upstream source (link back by id/name).
-- Each stage's `AGENTS.md` holds its naming and generation rules; its
-  `README.md` explains what the stage is for. Read the `AGENTS.md` before
-  generating anything into a stage.
-- Rules are written **once**, in `AGENTS.md`. The `CLAUDE.md` beside it is a
-  stub that does nothing but `@AGENTS.md` — never copy rules into it, and never
-  let the two drift.
-- If file size in more than 300 lines, split data to separate files, create folder with name of file without md and write all data there as separate files, e.g. file `ACT-22-User.md` is more than 300 lines, create folder `ACT-22-User`, put there `ACT-22-User.md` and extract different parts to `ACT-22-User-Events.md`, `ACT-22-User-Entities.md` etc.
+## Staleness is derived, never written
+
+A citation to an entombed id is stale. Record that nowhere — resolve the id and
+look at where it lives. `obsolete/` **is** the marker. Writing a staleness flag
+into the citing artifact would modify a frozen file for information already
+derivable.
+
+A live artifact citing an entombed id is **flagged for review, not
+automatically entombed**. Most changes do not invalidate most dependents.
+Entombing a whole subgraph because one id moved churns the tree and spends human
+review on no-ops. A human decides which dependents actually died.
+
+A frozen filename citing an entombed id is correct and stays. The id records
+what the artifact was *derived from* — permanently true. It is provenance, not a
+live pointer.
+
+## New artifacts cite live ids only
+
+A frozen artifact keeps its dead citations as history. A new artifact may not
+create them: resolve every id you cite and confirm it is not in `obsolete/`
+first. Building on an entombed foundation forfeits everything the freeze buys.
+
+## A pass proposes; a human approves
+
+Raw data changes the PRD. The PRD changes what is true downstream. An agent
+computes the delta — which artifacts to issue, which to entomb, and the PRD
+change driving each — and **presents it for approval before anything moves.**
+
+Gate the plan, not the write. One reviewable decision per pass, not fifty.
+
+## The PRD is a mutable container of frozen requirements
+
+`0-vibes/prd/PRD.md` is the only PRD, and the only file rewritten in place. Its
+previous versions go to `0-vibes/prd/history/`.
+
+The requirements inside it are frozen like everything else: `R7`'s text never
+changes. A requirement that no longer holds is marked deprecated **in place**,
+stays in the current PRD forever, and a new `R{n}` is issued for what replaced
+it.
+
+That is what keeps `history/` purely forensic. Every citation in the tree
+resolves against the current PRD alone, so no agent ever needs an old version to
+answer "what is R7?" — which is what makes it safe to tell them not to look.
+
+## Rules live in exactly one file
+
+Agent rules live in `AGENTS.md`, tool-neutral, so any coding agent finds them —
+not one vendor's alone. Each folder's `CLAUDE.md` is a stub importing its
+`AGENTS.md` and every ancestor's, up to and including this one, because Claude
+Code does not read `AGENTS.md` by default.
+
+Never copy a rule into a `CLAUDE.md`. Never restate an ancestor's rule in a
+child. If you are editing a `CLAUDE.md`, you are editing the wrong file.
+
+## Two kinds of folder
+
+- **Structure folders** — the numbered stages and their subfolders. Each carries
+  `README.md`, `AGENTS.md`, and a `CLAUDE.md` stub.
+- **Content folders** — `obsolete/`, `raw/<date>/`, and the folder an oversized
+  file splits into. These hold data, not rules, and carry no convention files at
+  all.
+
+Never scaffold convention files into a content folder.
+
+## Splitting oversized files
+
+Only mutable files grow; frozen artifacts never do. In practice that means the
+PRD alone. Past ~300 lines, split it into a folder named for the file without
+its extension, keeping the parts addressable: `PRD.md` becomes `PRD/` holding
+`PRD.md`, `PRD-Requirements.md`, and so on. Citations are by id, so a split
+breaks nothing.
+
+`AGENTS.md` and `README.md` never split — splitting would break the import
+chain. One approaching 300 lines means too many rules, or a folder doing too
+much. Cut it.
+
+## Do not skip stages
+
+A spec cites a planning task; a design cites a spec. Read a stage's `AGENTS.md`
+before generating into it.
