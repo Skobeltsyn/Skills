@@ -10,7 +10,7 @@
       "name": "skills",
       "source": "./",
       "description": "Every skill in this repo, bundled as one plugin.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "license": "MIT",
       "homepage": "https://github.com/Skobeltsyn/Skills",
       "keywords": ["skills", "security", "agent"]
