@@ -2,14 +2,19 @@
 #
 # Scaffold the numbered agentic SDLC pipeline into a target repo.
 #
-#   bash scripts/scaffold.sh <target-dir> [--project "Name"] [--force] [--dry-run]
+#   bash scripts/scaffold.sh <target-dir> [--into <name>] [--project "Name"] [--force] [--dry-run]
+#
+# The pipeline lands in a container folder inside <target-dir>, not spilled
+# across its root — default `sdlc/`, so dropping this into a real codebase does
+# not collide with the project's own files. Override the name with --into <name>,
+# or pass --into . to write the stages at the target root (the old behaviour).
 #
 # Idempotent: existing files are skipped unless --force. See SKILL.md for the
 # adaptation pass that must follow.
 #
-# --force overwrites, but never without a net: the target is copied to
-# <target>.bak-<n> before the first overwrite. Adapted stage rules are hand-written
-# and unrecoverable, so a clobber must always be undoable.
+# --force overwrites, but never without a net: the container is copied to
+# <container>.bak-<n> before the first overwrite. Adapted stage rules are
+# hand-written and unrecoverable, so a clobber must always be undoable.
 
 set -euo pipefail
 
@@ -27,12 +32,16 @@ fi
 TEMPLATES="$SKILL_DIR/templates"
 
 TARGET=""
+CONTAINER="sdlc"          # the pipeline's home inside TARGET; --into . opts out
 PROJECT_NAME="Project"
 FORCE=0
 DRY_RUN=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
+    --into)
+      [ $# -ge 2 ] || { echo "error: --into needs a value (a folder name, or . for the target root)" >&2; exit 2; }
+      CONTAINER="$2"; shift 2 ;;
     --project)
       [ $# -ge 2 ] || { echo "error: --project needs a value" >&2; exit 2; }
       PROJECT_NAME="$2"; shift 2 ;;
@@ -62,29 +71,37 @@ if [ ! -d "$TARGET" ]; then
 fi
 TARGET="$(cd "$TARGET" 2>/dev/null && pwd || echo "$TARGET")"
 
+# Where files actually land. `--into .` (or an empty name) writes at the target
+# root; any other name nests the whole pipeline in that one container folder.
+if [ -z "$CONTAINER" ] || [ "$CONTAINER" = "." ]; then
+  DEST_ROOT="$TARGET"
+else
+  DEST_ROOT="$TARGET/$CONTAINER"
+fi
+
 created=0
 skipped=0
 backup_dir=""
 
-# --force clobbers hand-adapted files, so copy the target aside before the first
-# overwrite. Lazy: a --force run that overwrites nothing leaves no backup behind.
+# --force clobbers hand-adapted files, so copy the container aside before the
+# first overwrite. Lazy: a --force run that overwrites nothing leaves no backup.
 make_backup() {
   [ -z "$backup_dir" ] || return 0          # already backed up this run
   local n=1
-  while [ -e "$TARGET.bak-$n" ]; do n=$((n + 1)); done
-  backup_dir="$TARGET.bak-$n"
+  while [ -e "$DEST_ROOT.bak-$n" ]; do n=$((n + 1)); done
+  backup_dir="$DEST_ROOT.bak-$n"
   if [ "$DRY_RUN" -eq 1 ]; then
-    echo "  would back up $TARGET -> $backup_dir"
+    echo "  would back up $DEST_ROOT -> $backup_dir"
     return 0
   fi
-  cp -R "$TARGET" "$backup_dir"
-  echo "  backup  $TARGET -> $backup_dir"
+  cp -R "$DEST_ROOT" "$backup_dir"
+  echo "  backup  $DEST_ROOT -> $backup_dir"
 }
 
 # Sorted for deterministic, readable output.
 while IFS= read -r src; do
   rel="${src#"$TEMPLATES"/}"
-  dest="$TARGET/$rel"
+  dest="$DEST_ROOT/$rel"
 
   if [ -e "$dest" ] && [ "$FORCE" -eq 0 ]; then
     echo "  skip    $rel (exists)"
@@ -110,12 +127,13 @@ done < <(find "$TEMPLATES" -type f ! -name '.DS_Store' | sort)
 
 echo
 if [ "$DRY_RUN" -eq 1 ]; then
-  echo "dry run: $created file(s) would be written, $skipped skipped."
-  [ -n "$backup_dir" ] && echo "         $TARGET would be backed up to $backup_dir first."
+  echo "dry run: $created file(s) would be written into $DEST_ROOT, $skipped skipped."
+  [ -n "$backup_dir" ] && echo "         $DEST_ROOT would be backed up to $backup_dir first."
   exit 0
 fi
 
-echo "Scaffolded into $TARGET — $created created, $skipped skipped."
+echo "Scaffolded into $DEST_ROOT — $created created, $skipped skipped."
+[ "$DEST_ROOT" != "$TARGET" ] && echo "The pipeline lives in $CONTAINER/ so it stays clear of the rest of $TARGET."
 [ -n "$backup_dir" ] && echo "Overwrote existing files; the originals are in $backup_dir"
 echo
 echo "Next: the adaptation pass in $SKILL_DIR/SKILL.md"

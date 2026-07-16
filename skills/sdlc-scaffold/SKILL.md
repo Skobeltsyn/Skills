@@ -30,12 +30,19 @@ identical whether the skill is installed as a plugin, sits in `~/.claude/skills/
 or is vendored into a project's `.claude/skills/`. Do not rewrite it as a
 literal path.
 
+- The pipeline lands in a **container folder** inside `<target-dir>` — default
+  `sdlc/` — so it does not spill the ten numbered stages across a real repo's
+  root and collide with the project's own files. `<target-dir>` is the repo;
+  `<target-dir>/sdlc/` is the pipeline.
+- `--into <name>` renames the container (e.g. `--into pipeline`). `--into .`
+  writes the stages at the target root — the old flat behaviour, for a directory
+  that *is* the pipeline and nothing else.
 - Idempotent: existing files are **skipped**, never clobbered. Safe to re-run to
   backfill stages added later.
 - Run `--dry-run` first when the target already has content, so the skip list is
   visible before anything lands.
-- `--force` overwrites — and **always copies the existing folder first**, to
-  `<target>.bak-<n>`, before the first file is overwritten. Stage rules get
+- `--force` overwrites — and **always copies the container first**, to
+  `<container>.bak-<n>`, before the first file is overwritten. Stage rules get
   hand-adapted after scaffolding and that work is unrecoverable, so a clobber
   must always be undoable. The copy is lazy: a `--force` run that overwrites
   nothing leaves no backup behind, and an existing `.bak-1` is never reused.

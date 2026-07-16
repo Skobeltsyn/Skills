@@ -84,6 +84,11 @@ stub beside it.
 bash "${CLAUDE_SKILL_DIR}/scripts/scaffold.sh" <target-dir> --project "Name"
 ```
 
+The pipeline lands in a container folder inside `<target-dir>` — `sdlc/` by
+default — so it stays clear of a real repo's own files instead of spilling ten
+numbered stage folders across the root. Rename it with `--into <name>`, or pass
+`--into .` to write the stages at the target root.
+
 Idempotent — existing files are skipped, so it is safe to re-run to backfill
 stages. Then do the **adaptation pass** in [`SKILL.md`](SKILL.md): an unadapted
 scaffold is a template, not yet a pipeline. The scaffold ships structure and
