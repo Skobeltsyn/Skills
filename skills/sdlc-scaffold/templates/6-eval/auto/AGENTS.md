@@ -15,19 +15,43 @@ visible instead of silently replaced.
 
 ## Each run folder holds
 
-- one folder per test case, each with a `record.json` carrying the shared
-  fields (`TC-{n}`, the `UC-{n}` it exercises, expected, actual, verdict) plus
-  whatever artifacts prove the verdict — screenshots, logs, diffs
-- a top-level `summary.json` with the totals
+- one folder per test case, each with a `record.json` and whatever artifacts
+  prove the verdict — screenshots, logs, diffs
+- a top-level `summary.json` listing every case with its `TC-{n}`, `UC-{n}`, and
+  per-verdict totals
 - the test-case table required by `../AGENTS.md`
 
-`actual` in `record.json` is the machine's captured output, the auto counterpart
-of a tester's recorded actual result — emitted by the run, never hand-written.
+A `record.json` carries: `identifier` (`TC-{n}`), `objective`, `use_case`
+(`UC-{n}`), `priority`, `preconditions`, `inputs`, a `steps` array — each step
+`{step, name, expected, actual, state}` where `state` is `PASS`/`FAIL`/`BLOCKED`
+— a `transcript` of the run environment, a flattened `actual`, the overall
+`verdict`, and `totals` `{pass, fail, blocked}`. A case that supersedes another
+(see `../AGENTS.md`) adds a `reproduces` field naming the id it corrects.
+
+`actual`, per step and overall, is the machine's captured output — the auto
+counterpart of a tester's recorded actual result, emitted by the run and never
+hand-written.
+
+## The harness cannot satisfy every precondition — that is `BLOCKED`, not `FAIL`
+
+An integration run that drives a real authenticated surface needs that
+environment present. When it is not — no signed-in session, no network, a
+missing fixture — every dependent step is `BLOCKED`, and the record says exactly
+what is missing and how to supply it. A signed-out browser is not a failing
+system; a run that recorded `FAIL` there would be inventing a defect. The harness
+attaches to an environment (e.g. a Chrome you signed into), never handles a
+credential itself, and aborts to `BLOCKED` the moment the environment is absent.
 
 ## The harness
 
-Exit non-zero when any check fails, so the run works as a CI gate. Commit the
-output, so the repo always holds the evidence.
+Exit non-zero when any check fails, so the run works as a CI gate.
+
+Commit the **evidence** — `record.json`, `summary.json`, screenshots, logs — so
+the repo always holds it. Do **not** commit the harness's machinery: a driver
+that installs packages leaves a `node_modules/` beside its `run.mjs` that is tens
+of megabytes of regenerable dependency, not evidence. Gitignore it (and lockfile
+caches). The rule of thumb: commit what proves a verdict, never what merely runs
+the check.
 
 `llm/` verdicts state the judging model and the prompt that produced them. A
 model verdict with neither is not reproducible, and an unreproducible verdict is

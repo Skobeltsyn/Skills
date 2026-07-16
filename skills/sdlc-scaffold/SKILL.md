@@ -260,6 +260,29 @@ Project-specific machinery, not pipeline structure:
   into `unit/`, `integration/`, `llm/`) but not the runner. The origin's was a
   Playwright Storybook screenshot/error harness wired to one specific Vue design
   system; build the one that fits the actual deliverable.
+- **Eval run output** — `record.json`, `summary.json`, screenshots, and a
+  driver's `node_modules/`. This is regenerated evidence, not scaffold. Gitignore
+  the harness's dependencies (one run pulled in 29 MB of `node_modules`); commit
+  only what proves a verdict.
+
+## What running eval taught the design
+
+Two rules in `6-eval/AGENTS.md` exist because a real run surfaced the gap, not
+because they were foreseen:
+
+- **A defective case is not a `FAIL`.** A manual case asserted a submit button
+  was disabled until a title was entered; the form enables it from render and
+  enforces the title on submit. The system was healthy; the *expectation* was
+  written from assumption. `PASS`/`FAIL`/`BLOCKED` has no verdict for "the case
+  was wrong", so the run was forced to record `FAIL` against a working system —
+  which reads on the dashboard as an unsatisfied use-case. The fix is structural,
+  not a new verdict: supersede the case (a new `TC-{n}` that `reproduces` it with
+  the expectation corrected), entomb the defective one, and roll up **live cases
+  only**. Ground every expected result in observed behaviour, never assumption.
+- **`BLOCKED` earns its place.** An integration run against a signed-out headless
+  browser correctly recorded `BLOCKED`, not `FAIL`, on every step, and said how
+  to unblock it. A run that had scored `FAIL` there would have invented a defect
+  in a system it never reached.
 
 ## Related
 

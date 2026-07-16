@@ -52,7 +52,37 @@ evidence of anything.
 `BLOCKED` is a real verdict and is **not** `FAIL` — a test that could not run has
 told you nothing about the system, and collapsing it into `FAIL` invents
 evidence. It is neither a pass nor a failure on the dashboard; it is its own
-column.
+column. A `BLOCKED` record must state **what would unblock it** — "not
+authenticated: sign in to the Chrome on 127.0.0.1:9222", not just "blocked."
+
+## An expected result is a claim about the *system* — ground it, never assume it
+
+A verdict is only as good as the expected result it checks against. Write every
+expected result from behaviour you have **observed or documented**, never from
+how you assume the system works. An assumed expectation turns a healthy system
+into a `FAIL`: a case that asserts "the submit button is disabled until a title
+is entered" fails a form that enables the button from render and enforces the
+title on submit — the defect is in the case, not the system. Contrast an
+expectation that anticipated real behaviour — "the URL carries an integer",
+which held even though the first issue was numbered `#2` — and passed.
+
+## When the case is wrong, not the system
+
+`FAIL` means the **system** did not do what a sound case expected. It does not
+mean the case's expectation was wrong — there is deliberately no verdict for
+that, because a defective case is not evidence about the system at all.
+
+When a run reveals a false expectation, do not leave a misleading `FAIL`
+standing, and do not edit the case — it is frozen. **Supersede it**: issue a new
+`TC-{n}` that reproduces it with the expectation corrected (its record carries a
+`reproduces` field naming the old id), and **entomb the defective case** in
+`obsolete/` with a tombstone saying which expectation was false and which `TC`
+replaced it.
+
+The dashboard rolls up **live cases only**. An entombed case never counts, so a
+corrected expectation stops dragging its use-case red the instant its case is
+entombed — which is the whole reason a wrong case is superseded rather than left
+to sit at `FAIL`.
 
 ## Every file opens with its test-case table
 
@@ -67,9 +97,9 @@ answerable by looking. The trace from a requirement to its use-cases otherwise
 runs through business tasks and specs — two hops, both by search.
 
 Because auto and manual share the field set, the dashboard sums them directly:
-per requirement, every use-case serving it, its latest verdict, and the run —
-auto or manual, with its date — that produced it. No translation between two
-metric systems, because there is only one.
+per requirement, every use-case serving it, its latest **live** verdict, and the
+run — auto or manual, with its date — that produced it. Entombed cases are
+excluded. No translation between two metric systems, because there is only one.
 
 A requirement with no test cases is **untested**, which is not the same as
 passing. Say so on its row. A dashboard that renders "no results" as green is
