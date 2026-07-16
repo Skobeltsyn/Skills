@@ -12,5 +12,5 @@ lg
 xl
 xxl
 
-Link each component back to the use-case(s) and entity/entities in 2-specs/ it
+Cite the use-case (`UC-{number}`) and entity (`ENT-{number}`) ids the component
 serves.
