@@ -1,27 +1,46 @@
 # 6 — Eval
 
-Evaluation of the results (`../5-results/`) against the specs (`../2-specs/`).
-Did what we built do what it was supposed to? The **quality gate**.
+Evaluation of the results (`../5-results/`) against the use-cases
+(`../2-specs/use-cases/`). Did what we built do what it was supposed to? The
+**quality gate**.
 
-An item passes this stage when it meets its acceptance criteria and moves on to
-`../7-security-check/`.
+An item passes this stage when every use-case serving its requirement has a
+passing verdict on `DASHBOARD.md`, and moves on to `../7-security-check/`.
 
-## What goes here
-- Test results and acceptance-criteria checks
-- Evaluation reports (functional, quality, performance)
-- Pass/fail verdicts linked back to specs
+## Why use-cases, not requirements
 
-## Automated eval
+A use-case is the only spec you can actually run: actor, trigger, entity,
+outcome — that is a test. Actors, entities, and events are definitions.
+Requirements are intent, satisfied only through the use-cases that realize them.
+So evaluation happens at the use-case level, and the dashboard rolls it up to
+the requirement.
 
-If the deliverable can be exercised automatically, add an `auto/` harness here
-that runs on every change and writes its evidence back into this folder:
+## Structure
 
-- One output folder per unit under test, each with a machine-readable
-  `record.json` plus whatever artifacts prove the verdict (screenshots, logs).
-- A top-level `summary.json` with the totals.
-- A non-zero exit code when any check fails, so it works as a CI gate.
-- Committed output, so the repo always holds the latest evidence traceable back
-  to `../2-specs/`.
+```
+6-eval/
+├── auto/<date>/{unit,integration,llm}/   machine-run evidence
+├── manual/<date>/test_cases/             human-run test cases, ISO 29119-3
+└── DASHBOARD.md                          the roll-up: is R7 satisfied?
+```
 
-Summarize the latest run here — counts and pass/fail — so the gate's state is
-readable without running it.
+One dated folder per run, `YYYY-MM-DD`. Past runs are never overwritten — that
+history is what makes a regression visible rather than silently replaced.
+
+## The dashboard is the answer to "are we done?"
+
+`DASHBOARD.md` states, per requirement, every use-case serving it and that
+use-case's latest verdict. It is the only place that question is answerable by
+looking; the trace from a requirement down to its use-cases otherwise runs
+through business tasks and specs.
+
+A requirement with no test cases is **untested**, not passing. The dashboard
+says so explicitly — a green that means "we never looked" is worse than no
+dashboard at all.
+
+## Every file carries a test-case table
+
+Any file here opens with a table of the test cases it covers, each row citing
+the use-case id it exercises. Open any file and the mapping is right there.
+
+Naming, verdicts, and the rules for evidence are in [`AGENTS.md`](AGENTS.md).

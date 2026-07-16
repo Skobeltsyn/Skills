@@ -20,9 +20,14 @@ tree and nothing moves, because nothing is permitted to.
 
 ## Ids are permanent
 
-Every id — `R{n}`, `OT-{n}`, `PT-{n}`, `ACTOR-{n}`, `ENT-{n}`, `EVT-{n}`,
-`UC-{n}`, `FIG-{n}` — is allocated once. Never reused, never renumbered. The
-next id is one past the highest ever issued, counting obsolete ones.
+Every id — `R{n}`, `BT-{n}`, `ACTOR-{n}`, `ENT-{n}`, `EVT-{n}`,
+`UC-{n}`, `FIG-{n}`, `TC-{n}` — is allocated once. Never reused, never
+renumbered. The next id is one past the highest ever issued, counting obsolete
+ones.
+
+Each id belongs to exactly one artifact type. Never name an artifact with
+another type's id — every id resolves by glob, so an eval named `UC-12-…` makes
+`**/UC-12-*.md` return two files and the resolver ambiguous.
 
 Reissuing an id silently repoints every citation in the tree at the wrong
 artifact. Nothing errors. That is why this rule has no exceptions.
@@ -121,7 +126,8 @@ child. If you are editing a `CLAUDE.md`, you are editing the wrong file.
 
 - **Structure folders** — the numbered stages and their subfolders. Each carries
   `README.md`, `AGENTS.md`, and a `CLAUDE.md` stub.
-- **Content folders** — `obsolete/`, `raw/<date>/`, and the folder an oversized
+- **Content folders** — `obsolete/`, `raw/<date>/`, `6-eval/auto/<date>/…`,
+  `6-eval/manual/<date>/…`, and the folder an oversized
   file splits into. These hold data, not rules, and carry no convention files at
   all.
 

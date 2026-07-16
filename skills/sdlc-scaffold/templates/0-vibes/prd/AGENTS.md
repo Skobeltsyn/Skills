@@ -13,9 +13,12 @@ whole pipeline is built on, so they carry its strictest rules.
 - **Number every requirement `R{n}`.** One requirement per number. Never a
   compound — "R4: users can log in and reset passwords" is two requirements
   wearing one id, and half of it can never be deprecated on its own.
-- **Each is atomic and testable.** If `6-eval/` cannot return pass or fail
-  against it, it is not a requirement — it is a goal. "The system should be
-  fast" is uncheckable. "Search returns in under 200ms at p95" is a requirement.
+- **Each is atomic and realizable as use-cases.** Nothing tests a requirement
+  directly — `6-eval/` tests the use-cases that realize it, and a requirement is
+  satisfied only through them. So the bar is: can a concrete use-case be derived
+  from this, with an actor, a trigger, and an outcome someone can check? "The
+  system should be fast" yields none. "Search returns in under 200ms at p95"
+  yields one.
 - **`R{n}` is permanent.** Never renumbered, never reused, never reworded. The
   next id is one past the highest ever issued, counting deprecated ones.
 - **A requirement that no longer holds is deprecated in place** — marked dead,
@@ -60,7 +63,9 @@ These, and nothing else by default:
 - **Goals and non-goals** — non-goals especially; they are what stops scope
   creep three stages downstream
 - **Requirements** — numbered `R{n}`, grouped however suits the project
-- **Success metrics** — what `6-eval/` measures against
+- **Success metrics** — what "working" means at the product level. `6-eval/`
+  measures use-cases; these are how you know the use-cases added up to the
+  thing you wanted.
 
 ## Sections to include only when real
 

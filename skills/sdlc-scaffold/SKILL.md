@@ -128,7 +128,7 @@ from that rule's one home:
 |--------|---------|------|
 | `2-specs/` | `@AGENTS.md` | the cross-cutting spec rules |
 | `2-specs/actors/` | `@AGENTS.md` + `@../AGENTS.md` | the `ACTOR-{n}` scheme **and** the spec rules |
-| `1-business-tasks/observation/errors/` | `@AGENTS.md` + `@../AGENTS.md` + `@../../AGENTS.md` | `TYPE is ERROR`, the `OT-{n}-{TYPE}` scheme, the origination rules |
+| `1-business-tasks/observation/errors/` | `@AGENTS.md` + `@../AGENTS.md` + `@../../AGENTS.md` | `TYPE is ERROR`, the `BT-{n}-{TYPE}-{TITLE}` scheme, the origination rules |
 
 **The chain runs all the way to the root**, which is where the pipeline law
 lives — the cross-cutting rules no single stage can enforce: artifacts are
@@ -189,12 +189,12 @@ Scaffolded schemes, verbatim from the origin pipeline:
 
 | Stage | Artifact | Scheme |
 |-------|----------|--------|
-| `1-business-tasks/observation/` | observation task | `OT-{n}-{TYPE}.md` |
-| `1-business-tasks/planning/` | planning task | `PT-{n}.md` |
-| `2-specs/actors/` | actor | `ACTOR-{n}-NAME-IN-MODULE` |
-| `2-specs/entities/` | entity | `ENT-{n}-NAME-IN-MODULE` |
-| `2-specs/events/` | event | `EVT-{n}-NAME-IN-MODULE` |
-| `2-specs/use-cases/` | use-case | `UC-{n}-ACTOR-{n}-EVT-{n}-ENT-{n}-RESULT-IN-MODULE` |
+| `1-business-tasks/` | business task | `BT-{n}-{TYPE}-{TITLE}.md` |
+| `2-specs/actors/` | actor | `ACTOR-{n}-{NAME}-IN-{MODULE}` |
+| `2-specs/entities/` | entity | `ENT-{n}-{NAME}-IN-{MODULE}` |
+| `2-specs/events/` | event | `EVT-{n}-{NAME}-IN-{MODULE}` |
+| `2-specs/use-cases/` | use-case | `UC-{n}-ACTOR-{n}-EVT-{n}-ENT-{n}-{RESULT}-IN-{MODULE}` |
+| `6-eval/manual/` | test case | `TC-{n}` |
 | `3-design/` | component | `FIG-{n}-{TYPE}-{VARIANT1-name}-{value}-…` |
 
 Two properties worth preserving when inventing new schemes:
@@ -214,7 +214,7 @@ citation pointing at it, and filenames start with their id so any id resolves by
 glob (`**/ACTOR-1-*.md`). Every subfolder
 `README.md` carries an **index table** of its artifacts with those links — see
 the `Source` / `PT` columns in the scaffolded spec READMEs. When the origin repo
-lists `| PT-1 | Authentication | R1, R13, R16 |`, that row is the audit trail
+lists `| BT-1 | Authentication | R1, R13, R16 |`, that row is the audit trail
 from a PRD requirement to a module.
 
 ### 5. Severity triage appears at both ends of the loop
@@ -255,9 +255,10 @@ Project-specific machinery, not pipeline structure:
   principles, per-component and per-page ground truth). Its `pages/CLAUDE.md`
   rule ("folders reflect URLs, generated from use-cases, one per size") is a
   good pattern to copy **if** the project has a page surface.
-- `6-eval/auto/` — a Playwright Storybook screenshot/error harness wired to one
-  specific Vue design system. Build the eval harness that fits the actual
-  deliverable.
+- The eval **harness** — `6-eval/auto/` scaffolds the shape (dated runs split
+  into `unit/`, `integration/`, `llm/`) but not the runner. The origin's was a
+  Playwright Storybook screenshot/error harness wired to one specific Vue design
+  system; build the one that fits the actual deliverable.
 
 ## Related
 

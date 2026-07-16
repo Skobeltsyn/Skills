@@ -1,8 +1,11 @@
-Each planning task is `PT-{number}.md`, and contains everything needed to
-understand and accomplish it.
+`{type}` here is always `PLANNING`.
 
-Cite what it came from: the PRD requirement (`R{number}`) it serves, and the
-observation task (`OT-{number}`) that surfaced it, if there was one.
+Cite the observation task (`BT-{number}`) that surfaced this, if there was one.
+
+Every planning task serves a requirement — a fix for a bug serves the
+requirement the bug violates.
+
+Contain everything needed to understand and accomplish it.
 
 Interview the creator until you share an understanding of the task. **If no
 human is reachable — you are a spawned agent, and often will be — do not guess

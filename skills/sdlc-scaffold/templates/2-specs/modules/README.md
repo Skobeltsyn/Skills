@@ -3,7 +3,7 @@
 Functional units that compose actors, entities, and events into behavior — the
 **how it fits together**.
 
-A module is the unit a planning task (`PT-{n}`) maps onto, and the name that
+A module is the unit a planning business task (`BT-{n}`) maps onto, and the name that
 appears in the `-IN-MODULE` suffix of every actor, entity, event, and use-case
 id.
 

@@ -1,4 +1,5 @@
-A module is the unit a planning task (`PT-{number}`) maps onto, and the name
+A module is the unit a planning business task (`BT-{number}-PLANNING-…`) maps onto,
+and the name
 that appears in the `-IN-{MODULE}` suffix of every actor, entity, event, and
 use-case id.
 
