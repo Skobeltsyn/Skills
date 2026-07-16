@@ -1,3 +1,5 @@
+Aim of document is to become source of truth for whole project, so all expressions should be wide enough to cover whole project.
+
 Typical components of a product requirements document (PRD) are:
 
 Title & author information

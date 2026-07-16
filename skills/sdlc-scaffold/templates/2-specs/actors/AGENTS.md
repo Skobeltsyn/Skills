@@ -5,4 +5,4 @@ Events, and all its use-cases, as links or references.
 
 Define each actor's identity, goals, and permissions.
 
-link all connected entities and events and use cases
+link all connected entities and events and use cases and link em
