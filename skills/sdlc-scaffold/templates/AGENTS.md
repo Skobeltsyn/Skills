@@ -111,3 +111,4 @@ Deployment configs, release notes, rollout/rollback plans.
 - Rules are written **once**, in `AGENTS.md`. The `CLAUDE.md` beside it is a
   stub that does nothing but `@AGENTS.md` — never copy rules into it, and never
   let the two drift.
+- If file size in more than 300 lines, split data to separate files, create folder with name of file without md and write all data there as separate files, e.g. file `ACT-22-User.md` is more than 300 lines, create folder `ACT-22-User`, put there `ACT-22-User.md` and extract different parts to `ACT-22-User-Events.md`, `ACT-22-User-Entities.md` etc.
