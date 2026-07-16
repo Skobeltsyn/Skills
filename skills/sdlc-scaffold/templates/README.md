@@ -2,7 +2,8 @@
 
 Work flows through ten numbered stages, from raw idea to running system and back
 again. This README orients a human arriving cold. The rules agents must obey are
-in [`AGENTS.md`](AGENTS.md).
+in [`AGENTS.md`](AGENTS.md); the step-by-step for running one cycle is in
+[`RUNBOOK.md`](RUNBOOK.md).
 
 ## The pipeline
 
