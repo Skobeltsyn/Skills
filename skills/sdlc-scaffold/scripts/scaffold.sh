@@ -2,12 +2,17 @@
 #
 # Scaffold the numbered agentic SDLC pipeline into a target repo.
 #
-#   bash scripts/scaffold.sh <target-dir> [--into <name>] [--project "Name"] [--force] [--dry-run]
+#   bash scripts/scaffold.sh <target-dir> [--into <name>] [--project "Name"] [--force] [--dry-run] [--no-host-pointer]
 #
 # The pipeline lands in a container folder inside <target-dir>, not spilled
 # across its root — default `sdlc/`, so dropping this into a real codebase does
 # not collide with the project's own files. Override the name with --into <name>,
 # or pass --into . to write the stages at the target root (the old behaviour).
+#
+# When a container is used, a short pointer is added to the host repo's own
+# CLAUDE.md (created if absent) so agents working at the repo root discover the
+# pipeline and know to read <container>/RUNBOOK.md. The pointer is marked and
+# idempotent. Pass --no-host-pointer to leave the host CLAUDE.md untouched.
 #
 # Idempotent: existing files are skipped unless --force. See SKILL.md for the
 # adaptation pass that must follow.
@@ -36,6 +41,7 @@ CONTAINER="sdlc"          # the pipeline's home inside TARGET; --into . opts out
 PROJECT_NAME="Project"
 FORCE=0
 DRY_RUN=0
+HOST_POINTER=1            # add a pipeline pointer to the host CLAUDE.md
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -45,8 +51,9 @@ while [ $# -gt 0 ]; do
     --project)
       [ $# -ge 2 ] || { echo "error: --project needs a value" >&2; exit 2; }
       PROJECT_NAME="$2"; shift 2 ;;
-    --force)   FORCE=1; shift ;;
-    --dry-run) DRY_RUN=1; shift ;;
+    --force)          FORCE=1; shift ;;
+    --dry-run)        DRY_RUN=1; shift ;;
+    --no-host-pointer) HOST_POINTER=0; shift ;;
     -h|--help)
       # Print the leading comment block, whatever length it grows to.
       awk 'NR==1 {next} /^#/ {sub(/^# ?/, ""); print; next} {exit}' "${BASH_SOURCE[0]}"
@@ -98,6 +105,45 @@ make_backup() {
   echo "  backup  $DEST_ROOT -> $backup_dir"
 }
 
+# A container keeps the pipeline out of the host root, but that also hides it: an
+# agent working at the repo root never descends into the container, so it needs a
+# pointer in the host's own CLAUDE.md to know the pipeline is there. Marked and
+# idempotent; prefers an existing .claude/CLAUDE.md, else the root CLAUDE.md.
+add_host_pointer() {
+  [ "$DEST_ROOT" != "$TARGET" ] || return 0    # no container: pipeline IS the root
+  [ "$HOST_POINTER" -eq 1 ] || return 0
+
+  local cm="$TARGET/CLAUDE.md"
+  [ -f "$TARGET/.claude/CLAUDE.md" ] && cm="$TARGET/.claude/CLAUDE.md"
+  local shown="${cm#"$TARGET"/}"
+
+  if [ -f "$cm" ] && grep -q 'sdlc-scaffold:pipeline' "$cm" 2>/dev/null; then
+    echo "Host pointer already in $shown — left as is."
+    return 0
+  fi
+
+  local existed=0; [ -f "$cm" ] && existed=1
+
+  if [ "$DRY_RUN" -eq 1 ]; then
+    [ "$existed" -eq 1 ] && echo "would append a pipeline pointer to $shown" \
+                         || echo "would create $shown with a pipeline pointer"
+    return 0
+  fi
+
+  {
+    [ "$existed" -eq 1 ] && printf '\n'
+    printf '<!-- sdlc-scaffold:pipeline -->\n'
+    printf '## SDLC pipeline\n\n'
+    printf 'This project runs the numbered SDLC pipeline in `%s/`. To run a pass —\n' "$CONTAINER"
+    printf 'absorb new data, update the PRD, and fan the change through specs, design,\n'
+    printf 'and tasks — follow `%s/RUNBOOK.md`. The rules are in `%s/AGENTS.md`.\n' "$CONTAINER" "$CONTAINER"
+    printf '<!-- /sdlc-scaffold:pipeline -->\n'
+  } >> "$cm"
+
+  [ "$existed" -eq 1 ] && echo "Pointed $shown at the pipeline (appended)." \
+                       || echo "Created $shown pointing at the pipeline."
+}
+
 # Sorted for deterministic, readable output.
 while IFS= read -r src; do
   rel="${src#"$TEMPLATES"/}"
@@ -129,12 +175,14 @@ echo
 if [ "$DRY_RUN" -eq 1 ]; then
   echo "dry run: $created file(s) would be written into $DEST_ROOT, $skipped skipped."
   [ -n "$backup_dir" ] && echo "         $DEST_ROOT would be backed up to $backup_dir first."
+  add_host_pointer
   exit 0
 fi
 
 echo "Scaffolded into $DEST_ROOT — $created created, $skipped skipped."
 [ "$DEST_ROOT" != "$TARGET" ] && echo "The pipeline lives in $CONTAINER/ so it stays clear of the rest of $TARGET."
 [ -n "$backup_dir" ] && echo "Overwrote existing files; the originals are in $backup_dir"
+add_host_pointer
 echo
 echo "Next: the adaptation pass in $SKILL_DIR/SKILL.md"
 echo "  1. set the project name + stage list in AGENTS.md"

@@ -6,6 +6,13 @@ generation rules on top and never restates what is here.
 What each stage is *for* is in [`README.md`](README.md). This file is only what
 an agent must obey.
 
+## Running a pass
+
+To run one cycle — absorb new data, update the PRD, and fan the change through
+specs, design, and tasks — follow the procedure in `RUNBOOK.md`. This file is
+the law that holds across every pass; the runbook is the order to apply it in.
+Open `RUNBOOK.md` when you start a pass; it is not loaded for you, by design.
+
 ## Artifacts are closed for modification, open for extension
 
 A generated artifact is **frozen** the instant it is written. Its content, its

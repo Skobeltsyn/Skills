@@ -37,6 +37,18 @@ literal path.
 - `--into <name>` renames the container (e.g. `--into pipeline`). `--into .`
   writes the stages at the target root — the old flat behaviour, for a directory
   that *is* the pipeline and nothing else.
+- With a container, a short marked pointer is added to the **host repo's own
+  `CLAUDE.md`** (created if absent, appended if present, skipped if already
+  there) so an agent working at the repo root discovers the pipeline and knows to
+  read `<container>/RUNBOOK.md`. Without it the container hides the pipeline from
+  the host — walk-up loading never descends into a subdirectory. `--no-host-pointer`
+  leaves the host `CLAUDE.md` untouched. Flat mode (`--into .`) skips it: the
+  pipeline *is* the root there.
+- The runbook itself is **referenced, never `@import`ed**. Claude Code loads
+  every ancestor `CLAUDE.md` in full via walk-up, so importing a multi-step
+  procedure at the pipeline root would load it into every stage-scoped agent. The
+  root `AGENTS.md` names `RUNBOOK.md` in three lines; the procedure loads only
+  when an agent opens it to run a pass.
 - Idempotent: existing files are **skipped**, never clobbered. Safe to re-run to
   backfill stages added later.
 - Run `--dry-run` first when the target already has content, so the skip list is
