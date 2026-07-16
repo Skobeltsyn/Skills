@@ -63,9 +63,16 @@ is validated against. Organized by concern:
 - `3-design/react/` — React component implementations.
 - `3-design/vue/` — Vue component implementations.
 
-**Rule: every component must have a Storybook story.** Each component in
-`react/` and `vue/` ships with its own Storybook (`*.stories.*`) so it can be
-viewed, tested, and reviewed in isolation.
+**Rule: every component must have a Storybook story covering all its internal
+states.** Each component in `react/` and `vue/` ships with its own Storybook
+(`*.stories.*`) so it can be viewed, tested, and reviewed in isolation. A story
+per component is not enough — every internal state the component can be in must
+appear in it, matching the states of the Figma component it mirrors.
+
+This rule is stated in four places on purpose (here, `3-design/README.md`, and
+both framework `AGENTS.md` files) so no agent can miss it. That makes it the one
+deliberate exception to *one rule, one home* — change it in all four or it
+drifts.
 
 ### 4. Tasks — `4-tasks/`
 Concrete **implementation/build tasks** derived from the specs and designs. This

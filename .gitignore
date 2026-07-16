@@ -16,3 +16,6 @@
 node_modules/
 __pycache__/
 *.pyc
+
+# Claude Code personal settings (hooks are machine-local)
+.claude/settings.local.json

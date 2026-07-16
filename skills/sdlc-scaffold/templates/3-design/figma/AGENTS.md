@@ -13,4 +13,5 @@ implementations are derived from / synced against it.
 - Components in Figma map 1:1 to components in `../react/` and `../vue/`.
 - Keep component names consistent across Figma, React, and Vue.
 - Every component must have a corresponding **Storybook** story in each
-  framework folder — no component is "done" without one.
+  framework folder, covering all of its internal states — no component is
+  "done" until every state it can be in appears there.

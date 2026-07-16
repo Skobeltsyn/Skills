@@ -138,6 +138,19 @@ files drift and agents start disagreeing about the naming scheme. If you catch
 yourself editing a `CLAUDE.md`, you are editing the wrong file. The stub is
 append-only in one direction: content moves *out* to `AGENTS.md`, never in.
 
+**The one sanctioned exception, and what it costs.** A rule important enough
+that no agent may miss it — in this scaffold, the Storybook rule — may be
+restated in several `AGENTS.md` files rather than left to the import chain. Buy
+that insurance deliberately and rarely, and know the premium: the Storybook rule
+was duplicated across the root, `3-design/README.md`, and both framework files,
+and it *had already drifted* before anyone noticed — the root asked for a story
+per component, the leaves asked for a story covering every internal state. Two
+different bars for one rule, and which one an agent obeyed depended on where it
+entered the tree. If you duplicate a rule, enumerate its homes in the copy that
+governs (see the root `AGENTS.md`) and change them together. Everything else —
+naming schemes above all — gets exactly one home and reaches its children
+through `@../AGENTS.md`.
+
 Same rule at the repo root: the pipeline charter is the root `AGENTS.md`; the
 root `CLAUDE.md` is the same stub, importing `@AGENTS.md` and nothing else.
 
