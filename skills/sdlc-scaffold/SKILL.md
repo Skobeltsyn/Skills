@@ -190,6 +190,7 @@ Scaffolded schemes, verbatim from the origin pipeline:
 | Stage | Artifact | Scheme |
 |-------|----------|--------|
 | `1-business-tasks/` | business task | `BT-{n}-{TYPE}-{TITLE}.md` |
+| `2-specs/modules/` | module | `MOD-{n}-{NAME}` (NAME becomes the `-IN-{MODULE}` suffix) |
 | `2-specs/actors/` | actor | `ACTOR-{n}-{NAME}-IN-{MODULE}` |
 | `2-specs/entities/` | entity | `ENT-{n}-{NAME}-IN-{MODULE}` |
 | `2-specs/events/` | event | `EVT-{n}-{NAME}-IN-{MODULE}` |

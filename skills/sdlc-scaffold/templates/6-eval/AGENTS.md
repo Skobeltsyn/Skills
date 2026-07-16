@@ -11,7 +11,7 @@ only through the use-cases that realize it.
 
 ```
 6-eval/
-├── auto/<date>/{integration,unit,llm}/   machine-run evidence
+├── auto/<date>/{unit,integration,llm}/   machine-run test cases
 ├── manual/<date>/test_cases/             human-run test cases
 └── DASHBOARD.md                          the roll-up
 ```
@@ -20,25 +20,45 @@ only through the use-cases that realize it.
 
 Everything below `auto/` and `manual/` is a **content folder** — no `README.md`,
 `AGENTS.md`, or `CLAUDE.md` inside a dated folder or a type folder. The rules for
-`integration/`, `unit/`, `llm/`, and `test_cases/` live in the `AGENTS.md` of the
-last fixed level above them: `auto/AGENTS.md` and `manual/AGENTS.md`.
+`unit/`, `integration/`, `llm/`, and `test_cases/` live in `auto/AGENTS.md` and
+`manual/AGENTS.md`.
 
-## Every file carries a test-case table
+## A test case has one set of fields — auto and manual are the same animal
 
-Every file in this stage — automated or manual, evidence or verdict — opens with
-a table of the test cases it covers:
+Auto and manual are two ways to *execute* one test-case concept, not two
+concepts. Every test case, run by a machine or a human, records the same fields
+(aligned to ISO/IEC/IEEE 29119-3):
 
-| Test case | Use-case | Objective | Expected result | Verdict |
-|-----------|----------|-----------|-----------------|---------|
-| `TC-1` | `UC-12` | … | … | PASS / FAIL / BLOCKED |
+| Field | Meaning |
+|-------|---------|
+| **identifier** | `TC-{number}` — permanent, never reused |
+| **objective** | what this case establishes |
+| **use-case** | the `UC-{number}` it exercises — cite by id, never by path |
+| **priority** | how much a failure here matters |
+| **preconditions** | the state the system must be in before the first step |
+| **inputs & steps** | numbered, each unambiguous and independently checkable |
+| **expected result** | what a pass looks like, per step where it matters |
+| **actual result** | recorded **at execution**, from what happened — never predicted |
+| **verdict** | `PASS` · `FAIL` · `BLOCKED` |
 
-Cite the use-case by id, never by path. A row with no use-case id proves
-nothing: it is an assertion about the system that nothing in the pipeline asked
-for.
+`auto/` records these as machine-readable `record.json`; `manual/` records them
+as documented cases a person executes. Same fields, different executor — which
+is the whole reason their metrics roll up together on one dashboard.
 
-`BLOCKED` is a real verdict and is not `FAIL` — a test that could not run has
+A row with no `use-case` proves nothing: it is an assertion about the system that
+nothing in the pipeline asked for. `actual result` written before the run is not
+evidence of anything.
+
+`BLOCKED` is a real verdict and is **not** `FAIL` — a test that could not run has
 told you nothing about the system, and collapsing it into `FAIL` invents
-evidence.
+evidence. It is neither a pass nor a failure on the dashboard; it is its own
+column.
+
+## Every file opens with its test-case table
+
+Any file in this stage — auto or manual, evidence or verdict — opens with a
+table of the cases it covers, columns drawn from the fields above, each row
+citing its `use-case` id. Open any file and the mapping is right there.
 
 ## The dashboard
 
@@ -46,13 +66,15 @@ evidence.
 answerable by looking. The trace from a requirement to its use-cases otherwise
 runs through business tasks and specs — two hops, both by search.
 
-It states, per requirement: every use-case serving it, that use-case's latest
-verdict, and the date and run that produced it.
+Because auto and manual share the field set, the dashboard sums them directly:
+per requirement, every use-case serving it, its latest verdict, and the run —
+auto or manual, with its date — that produced it. No translation between two
+metric systems, because there is only one.
 
 A requirement with no test cases is **untested**, which is not the same as
-passing. Say so on its row. Absence of a failure is not evidence of a pass, and
-a dashboard that renders "no results" as green is worse than no dashboard.
+passing. Say so on its row. A dashboard that renders "no results" as green is
+worse than no dashboard.
 
 Regenerate the dashboard on every run. It is a **view**, not a frozen artifact —
-it is overwritten, and the freeze does not apply to it. The durable records are
-the dated run folders it reads.
+overwritten each time, the freeze does not apply. The durable records are the
+dated run folders it reads.

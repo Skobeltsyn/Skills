@@ -1,36 +1,25 @@
-Human evaluation. One dated folder per test round, `YYYY-MM-DD`, each holding a
-`test_cases/` folder.
+Human execution of the shared test-case fields (see `../AGENTS.md`). One dated
+folder per test round, `YYYY-MM-DD`, each holding a `test_cases/` folder.
 
-## Test cases follow ISO/IEC/IEEE 29119-3
+What is specific to manual runs:
 
-Every manual test case is documented to the ISO/IEC/IEEE 29119-3 test case
-specification, so a tester who has never seen this project can execute it and
-get the same verdict. At minimum each states:
+## Documented to ISO/IEC/IEEE 29119-3
 
-- **identifier** — `TC-{number}`, permanent, never reused
-- **objective** — what this case establishes
-- **use-case** — the `UC-{number}` it exercises
-- **priority**
-- **preconditions** — the state the system must be in before step 1
-- **inputs and steps** — numbered, each unambiguous and independently checkable
-- **expected result** — per step where it matters, and overall
-- **actual result** — recorded at execution, never predicted
-- **verdict** — PASS / FAIL / BLOCKED
-
-Verify field names and structure against the standard itself before claiming
-conformance — this list is the working set, not a citation of the clause.
+Each case is written to the ISO/IEC/IEEE 29119-3 test case specification so a
+tester who has never seen this project can execute it and reach the same
+verdict. Verify field names and structure against the standard itself before
+claiming conformance — the field set in `../AGENTS.md` is the working set, not a
+citation of the clause.
 
 ## Written for a stranger
 
-A manual test case is executable by someone with no context. "Log in and check it
-works" is not a test case: it names no precondition, no input, and no checkable
-expected result. If two testers could reasonably reach different verdicts, the
-case is underspecified and the fault is the case, not the tester.
+"Log in and check it works" is not a test case: no precondition, no input, no
+checkable expected result. If two testers could reasonably reach different
+verdicts, the case is underspecified — and the fault is the case, not the
+tester.
 
-## Actual results are recorded, never predicted
+## The human records the actual result
 
-Fill **actual result** at execution time from what happened. A case whose actual
-result was written before the run is not evidence of anything.
-
-`BLOCKED` when the case could not be run. Never round it to `FAIL` — a test that
-did not run has told you nothing about the system.
+Filled at execution from what happened, never before. `BLOCKED` when the case
+could not be run — a person's judgment that setup failed is still a recorded
+verdict, not a `FAIL`.

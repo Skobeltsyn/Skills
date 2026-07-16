@@ -20,7 +20,7 @@ tree and nothing moves, because nothing is permitted to.
 
 ## Ids are permanent
 
-Every id — `R{n}`, `BT-{n}`, `ACTOR-{n}`, `ENT-{n}`, `EVT-{n}`,
+Every id — `R{n}`, `BT-{n}`, `MOD-{n}`, `ACTOR-{n}`, `ENT-{n}`, `EVT-{n}`,
 `UC-{n}`, `FIG-{n}`, `TC-{n}` — is allocated once. Never reused, never
 renumbered. The next id is one past the highest ever issued, counting obsolete
 ones.

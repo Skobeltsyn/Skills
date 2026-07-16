@@ -1,5 +1,8 @@
-Automated evaluation. One dated folder per run, `YYYY-MM-DD`, holding three
-kinds:
+Machine execution of the shared test-case fields (see `../AGENTS.md`). Same
+fields as a manual case — objective, use-case, preconditions, inputs, expected,
+actual, verdict — recorded as machine-readable evidence rather than prose.
+
+One dated folder per run, `YYYY-MM-DD`, holding three kinds:
 
 | folder | what it runs |
 |--------|--------------|
@@ -7,15 +10,19 @@ kinds:
 | `integration/` | units together across a real boundary: API, database, queue |
 | `llm/` | behaviour only a model can judge — tone, correctness of prose, whether output satisfies an intent a matcher cannot express |
 
-Every run writes into its own dated folder. Never overwrite a past run's folder:
-that history is what makes a regression visible instead of silently replaced.
+Never overwrite a past run's folder: that history is what makes a regression
+visible instead of silently replaced.
 
 ## Each run folder holds
 
-- one output folder per unit under test, each with a machine-readable
-  `record.json` plus whatever artifacts prove the verdict (screenshots, logs)
+- one folder per test case, each with a `record.json` carrying the shared
+  fields (`TC-{n}`, the `UC-{n}` it exercises, expected, actual, verdict) plus
+  whatever artifacts prove the verdict — screenshots, logs, diffs
 - a top-level `summary.json` with the totals
-- the test-case table required by `../AGENTS.md`, citing use-case ids
+- the test-case table required by `../AGENTS.md`
+
+`actual` in `record.json` is the machine's captured output, the auto counterpart
+of a tester's recorded actual result — emitted by the run, never hand-written.
 
 ## The harness
 
@@ -24,7 +31,7 @@ output, so the repo always holds the evidence.
 
 `llm/` verdicts state the judging model and the prompt that produced them. A
 model verdict with neither is not reproducible, and an unreproducible verdict is
-an opinion.
+an opinion — not the objective evidence the `actual` field is supposed to hold.
 
 ## This output is evidence, not a frozen artifact
 
