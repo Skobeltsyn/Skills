@@ -10,8 +10,10 @@ Each skill is a folder with a `SKILL.md` (YAML frontmatter + instructions) plus 
   lethal trifecta (private data + untrusted content + external communication), then confirm
   which exfiltration paths are live with localhost canary probes.
 - [`sdlc-scaffold`](skills/sdlc-scaffold/) — scaffold the numbered agentic SDLC pipeline
-  (`0-vibes` → … → `10-observation`) into a repo: stage folders, per-stage README charters,
-  and per-stage `CLAUDE.md` convention files. Idempotent; safe to re-run to backfill stages.
+  (`0-vibes` → … → `9-observation`) into a repo: stage folders, per-stage README charters,
+  and per-stage `AGENTS.md` convention files (each with a `CLAUDE.md` stub that imports it).
+  Artifacts freeze on write, ids are permanent, obsolete work is entombed not deleted, and a
+  human approves each pass. Idempotent; safe to re-run to backfill stages.
 
 ## Layout
 
