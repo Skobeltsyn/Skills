@@ -30,3 +30,5 @@ reverse.
 
 Do not create tasks at this level. Every task belongs in `observation/` or
 `planning/`, and each half states what is specific to it.
+
+Each task must be created with SMART framework

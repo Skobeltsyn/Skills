@@ -1,4 +1,4 @@
-ENTITIES naming: `ENT-{number}-{NAME}-IN-{MODULE}`
+ENTITIES naming: `ENT-{number}-{NAMESPACE}-{NAME}-IN-{MODULE}`
 
 Specify fields, types, relationships, and invariants.
 

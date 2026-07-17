@@ -1,4 +1,4 @@
-MODULES naming: `MOD-{number}-{NAME}.md`
+MODULES naming: `MOD-{number}-{NAMESPACE}-{NAME}.md`
 
 A module is the unit a planning business task (`BT-{number}-PLANNING-…`) maps
 onto, and — through its `{NAME}` — the `-IN-{MODULE}` suffix on every actor,

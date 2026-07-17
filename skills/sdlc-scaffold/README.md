@@ -27,7 +27,7 @@ every artifact traces upstream to the need that produced it.
 
 | Stage | Holds |
 |-------|-------|
-| `0-vibes/` | raw ideas, the `raw/` data that arrives, and the single `PRD.md` |
+| `0-vibes/` | raw ideas, the `raw/` data that arrives, and the single `PRD.md` with its `GLOSSARY.md` |
 | `1-business-tasks/` | why: signals observed and plans shaped from them |
 | `2-specs/` | how it should work: modules, actors, entities, events, use-cases |
 | `3-design/` | how it looks: Figma source and framework components |

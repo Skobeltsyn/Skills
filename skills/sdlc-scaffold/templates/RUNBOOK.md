@@ -42,6 +42,12 @@ The new data updates `0-vibes/prd/PRD.md`. Before rewriting it:
   (they keep their `R{n}` and stay in the file), and issue a new `R{n}` for
   whatever replaced them. Leave every requirement the data did not touch exactly
   as it was.
+- Update `0-vibes/prd/GLOSSARY.md` for any term the new data redefined, and add
+  the ones the new requirements introduced. It is not copied to `history/`.
+  Watch for the case that looks like a definition change but is not: if the new
+  wording changes which cases an existing requirement covers, that requirement
+  died — deprecate it and issue a new `R{n}`, rather than moving it by editing
+  its vocabulary.
 
 After this step, `PRD.md` is the single source of truth for intent, and its
 `R{n}` list is what the rest of the pass diffs against.

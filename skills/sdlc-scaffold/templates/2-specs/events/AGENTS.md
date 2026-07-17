@@ -1,4 +1,4 @@
-EVENTS naming: `EVT-{number}-{NAME}-IN-{MODULE}`
+EVENTS naming: `EVT-{number}-{NAMESPACE}-{NAME}-IN-{MODULE}`
 
 Name the entity the event acts on, its trigger, and the state transition or side
 effect it causes.

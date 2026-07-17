@@ -1,8 +1,9 @@
 # PRD
 
-`PRD.md` is the only PRD. One per project, one file, that exact name. It is the
-single mutable artifact in the pipeline — everything downstream is frozen, and
-this is where change enters.
+`PRD.md` is the only PRD. One per project, that exact name, stating intent and
+the requirements it turns on. `GLOSSARY.md` beside it defines the terms those
+requirements are written in. The two are the only mutable artifacts in the
+pipeline — everything downstream is frozen, and this is where change enters.
 
 ## Requirements are the interface
 
@@ -66,6 +67,47 @@ These, and nothing else by default:
 - **Success metrics** — what "working" means at the product level. `6-eval/`
   measures use-cases; these are how you know the use-cases added up to the
   thing you wanted.
+
+## The glossary
+
+`GLOSSARY.md` sits beside `PRD.md` in this folder. It is part of the PRD, not a
+section of it — a mature project defines more terms than it states
+requirements, and a glossary inline would push the requirements off the first
+screen of the document they are the point of.
+
+A requirement is only atomic if its words are. "R7: a lapsed member is offered
+renewal" is one requirement or several depending on what *lapsed* means, and
+every stage downstream guesses separately. The glossary is where that is pinned
+once.
+
+Define a term when the project's meaning is narrower than the ordinary one, or
+when two stakeholders would answer differently. Skip the ones that carry their
+plain meaning — a glossary padded with obvious entries buries the load-bearing
+ones.
+
+Definitions are prose, not ids: no `G{n}`, no citations pointing here. A
+requirement uses a term, it does not cite it. The glossary is a reading aid for
+`PRD.md`, and its scope ends at that file. This is why it can be split off
+without the split meaning anything — nothing addresses it, so nothing breaks.
+
+It is **not** the domain model. Domain nouns are `ENT-{n}` in
+`2-specs/entities/`, one per file, frozen and cited. When a term is both — the
+PRD says *member*, and `ENT-4-MEMBER-IN-AUTH` defines its fields — the glossary
+gives the one sentence a reader needs here, and the entity owns the structure.
+Never restate an entity's fields in the glossary; that copy goes stale silently.
+
+Glossary text is mutable, like the rest of the PRD prose. Sharpening a fuzzy
+definition is an ordinary edit. But if the new wording changes which cases a
+requirement covers, that is a new `R{n}` — the definition moved the requirement,
+and the requirement is what is frozen.
+
+Past ~300 lines it splits like any mutable file: `GLOSSARY/` holding
+`GLOSSARY.md` and its parts.
+
+It is not copied to `history/`. A superseded `PRD.md` is kept because its
+requirements are cited across the tree and their old text is evidence. Nothing
+cites a definition, so an old glossary answers no question that the current one
+does not — and a stale copy beside a live one invites reading the wrong one.
 
 ## Sections to include only when real
 
