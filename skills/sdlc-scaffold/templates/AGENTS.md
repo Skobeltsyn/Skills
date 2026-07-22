@@ -51,7 +51,7 @@ artifact. Nothing errors. That is why this rule has no exceptions.
 
 ## Cite ids, never paths
 
-Cite `ACTOR-1`. Never `../actors/ACTOR-1-FARMER-IN-AUTH.md`.
+Cite `ACTOR-1`. Also `../actors/ACTOR-1-FARMER-IN-AUTH.md`.
 
 Filenames begin with their id, so any id resolves by glob — `**/ACTOR-1-*.md`.
 A path is a location, and locations change. An id is the artifact itself and
