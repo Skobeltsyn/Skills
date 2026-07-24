@@ -308,3 +308,8 @@ because they were foreseen:
 - Load `stage-conventions` before generating artifacts **into** a scaffolded
   stage. This skill writes the convention files; that one makes sure they get
   read (they're edited live and go stale fast).
+
+
+## Obsidian-friendly
+
+- Always create links please so data can be easily viewed in obsidian.

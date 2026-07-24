@@ -15,9 +15,12 @@ planning task in `../../1-business-tasks/planning/` cites it.
 ## Structure
 
 - `PRD.md` — the current PRD. The only one.
-- `history/` — superseded versions, each naming the raw data that retired it.
-  Forensic only: nothing there is needed to read the current PRD, because
-  deprecated requirements stay in `PRD.md` forever.
+- `GLOSSARY.md` — the terms the requirements are written in, split out because
+  it outgrows a section. Nothing cites it; it is a reading aid for `PRD.md`.
+- `history/` — superseded versions of `PRD.md`, each naming the raw data that
+  retired it. Forensic only: nothing there is needed to read the current PRD,
+  because deprecated requirements stay in `PRD.md` forever. The glossary is not
+  versioned here — no id resolves against it, so an old copy answers nothing.
 
 ## Why the requirements carry the weight
 

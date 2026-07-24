@@ -1,5 +1,5 @@
 USE-CASES naming:
-`UC-{number}-ACTOR-{number}-EVT-{number}-ENT-{number}-{RESULT}-IN-{MODULE}`
+`UC-{number}-{NAMESPACE}-ACTOR-{number}-EVT-{number}-ENT-{number}-{RESULT}-IN-{MODULE}`
 
 The filename carries the derivation: primary actor, trigger event, primary
 entity, outcome. A directory listing alone tells you who did what to which

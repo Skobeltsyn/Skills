@@ -13,6 +13,16 @@ specs, design, and tasks — follow the procedure in `RUNBOOK.md`. This file is
 the law that holds across every pass; the runbook is the order to apply it in.
 Open `RUNBOOK.md` when you start a pass; it is not loaded for you, by design.
 
+## Changing the pipeline itself
+
+Adding a stage, a rule, a field, or a template is not a pass — it changes the law
+a pass runs under. The discipline for that, and the open seams it has not closed
+yet, are in [`future/PRINCIPLES.md`](future/PRINCIPLES.md). Read it before
+editing any `AGENTS.md`, including this one.
+
+It is short, and it is mostly one idea: a rule that reads a fact no file records
+does not error, it fails closed and silently does nothing.
+
 ## Artifacts are closed for modification, open for extension
 
 A generated artifact is **frozen** the instant it is written. Its content, its
@@ -28,7 +38,7 @@ tree and nothing moves, because nothing is permitted to.
 ## Ids are permanent
 
 Every id — `R{n}`, `BT-{n}`, `MOD-{n}`, `ACTOR-{n}`, `ENT-{n}`, `EVT-{n}`,
-`UC-{n}`, `FIG-{n}`, `TC-{n}` — is allocated once. Never reused, never
+`UC-{n}`, `FIG-{n}`, `TSK-{n}`, `TC-{n}` — is allocated once. Never reused, never
 renumbered. The next id is one past the highest ever issued, counting obsolete
 ones.
 
@@ -39,9 +49,9 @@ another type's id — every id resolves by glob, so an eval named `UC-12-…` ma
 Reissuing an id silently repoints every citation in the tree at the wrong
 artifact. Nothing errors. That is why this rule has no exceptions.
 
-## Cite ids, never paths
+## Cite ids with links
 
-Cite `ACTOR-1`. Never `../actors/ACTOR-1-FARMER-IN-AUTH.md`.
+Cite `ACTOR-1`, `../actors/ACTOR-1-FARMER-IN-AUTH.md`.
 
 Filenames begin with their id, so any id resolves by glob — `**/ACTOR-1-*.md`.
 A path is a location, and locations change. An id is the artifact itself and
@@ -107,8 +117,11 @@ Gate the plan, not the write. One reviewable decision per pass, not fifty.
 
 ## The PRD is a mutable container of frozen requirements
 
-`0-vibes/prd/PRD.md` is the only PRD, and the only file rewritten in place. Its
-previous versions go to `0-vibes/prd/history/`.
+`0-vibes/prd/PRD.md` is the only PRD, and one of only two files rewritten in
+place. Its previous versions go to `0-vibes/prd/history/`. The other is
+`0-vibes/prd/GLOSSARY.md`, which defines the terms the requirements are written
+in; it is not versioned, because nothing cites it. That folder's `AGENTS.md`
+states its rules.
 
 The requirements inside it are frozen like everything else: `R7`'s text never
 changes. A requirement that no longer holds is marked deprecated **in place**,
@@ -134,19 +147,19 @@ child. If you are editing a `CLAUDE.md`, you are editing the wrong file.
 - **Structure folders** — the numbered stages and their subfolders. Each carries
   `README.md`, `AGENTS.md`, and a `CLAUDE.md` stub.
 - **Content folders** — `obsolete/`, `raw/<date>/`, `6-eval/auto/<date>/…`,
-  `6-eval/manual/<date>/…`, and the folder an oversized
-  file splits into. These hold data, not rules, and carry no convention files at
-  all.
+  `6-eval/manual/<date>/…`, `future/`, and the folder an oversized
+  file splits into. These hold data or standalone docs, not law, and carry no
+  convention files at all.
 
 Never scaffold convention files into a content folder.
 
 ## Splitting oversized files
 
-Only mutable files grow; frozen artifacts never do. In practice that means the
-PRD alone. Past ~300 lines, split it into a folder named for the file without
-its extension, keeping the parts addressable: `PRD.md` becomes `PRD/` holding
-`PRD.md`, `PRD-Requirements.md`, and so on. Citations are by id, so a split
-breaks nothing.
+Only mutable files grow; frozen artifacts never do. In practice that means
+`0-vibes/prd/PRD.md` and its `GLOSSARY.md`. Past ~300 lines, split one into a
+folder named for the file without its extension, keeping the parts addressable:
+`PRD.md` becomes `PRD/` holding `PRD.md`, `PRD-Requirements.md`, and so on.
+Citations are by id, so a split breaks nothing.
 
 `AGENTS.md` and `README.md` never split — splitting would break the import
 chain. One approaching 300 lines means too many rules, or a folder doing too
